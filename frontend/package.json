@@ -1,0 +1,14 @@
+{
+  "name": "ecoalert-frontend",
+  "version": "1.0.0",
+  "description": "Giao diện Hệ thống Giám sát & Báo cáo Ô nhiễm Môi trường Đô thị",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve . -p 3000",
+    "dev": "npx serve . -p 3000"
+  },
+  "keywords": ["environment", "pollution", "reporting", "gis", "leaflet"],
+  "author": "EcoAlert Team",
+  "license": "MIT"
+}
+
