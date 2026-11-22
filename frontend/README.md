@@ -70,3 +70,4 @@ Sau đó truy cập: `http://localhost:3000`
    node server.js
    ```
 2. Mở `frontend/index.html` để trải nghiệm hệ thống hoàn chỉnh kết nối SQL Server!
+

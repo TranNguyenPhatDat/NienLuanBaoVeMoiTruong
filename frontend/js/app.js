@@ -794,3 +794,4 @@ window.app = new EcoApp();
 document.addEventListener('DOMContentLoaded', () => {
   window.app.init();
 });
+

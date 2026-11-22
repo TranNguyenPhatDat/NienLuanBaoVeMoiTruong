@@ -792,3 +792,4 @@ class LocalDataStore {
 window.localDataStore = new LocalDataStore();
 window.INITIAL_POLLUTION_TYPES = INITIAL_POLLUTION_TYPES;
 window.INITIAL_USERS = INITIAL_USERS;
+

@@ -133,3 +133,4 @@ class ChartController {
 }
 
 window.chartController = new ChartController();
+

@@ -209,3 +209,4 @@ class MapController {
 }
 
 window.mapController = new MapController();
+
