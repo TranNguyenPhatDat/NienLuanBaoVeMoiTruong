@@ -1,6 +1,6 @@
 /**
- * EcoAlert Main Application Controller
- * Xử lý logic giao diện, phân quyền, bộ lọc, tương tác modal và thông báo
+- Bộ điều khiển chính của ứng dụng EcoAlert (app.js)
+- Xử lý giao diện, phân quyền người dùng thực tế, bộ lọc, bản đồ và cập nhật tiến độ
  */
 
 class EcoApp {
@@ -23,18 +23,18 @@ class EcoApp {
     this.setupEventListeners();
     this.renderFilterPollutionTypes();
 
-    // Khởi tạo bản đồ
+    // Khởi tạo bản đồ Cao Lãnh
     window.mapController.initMainMap('mainMap');
 
-    // Kiểm tra kết nối backend
+    // Kiểm tra kết nối Backend SQL Server
     window.apiService.checkHealth().then(available => {
       this.updateBackendStatusBadge(available);
     });
 
-    // Tải dữ liệu ban đầu
+    // Tải dữ liệu ban đầu từ SQL Server
     await this.refreshData();
 
-    // Auto check hash route
+    // Kiểm tra tab trên URL hash
     const hash = window.location.hash.replace('#', '');
     if (['map', 'list', 'stats', 'about'].includes(hash)) {
       this.switchTab(hash);
@@ -42,7 +42,7 @@ class EcoApp {
   }
 
   setupEventListeners() {
-    // Chuyển tab
+    // Chuyển đổi giữa các tab điều hướng
     document.querySelectorAll('[data-tab]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const tab = e.currentTarget.getAttribute('data-tab');
@@ -50,7 +50,7 @@ class EcoApp {
       });
     });
 
-    // Lắng nghe thay đổi xác thực
+    // Lắng nghe sự kiện đăng nhập / đăng xuất
     window.addEventListener('auth:change', (e) => {
       this.currentUser = e.detail.user;
       this.setupAuthUI();
@@ -63,7 +63,7 @@ class EcoApp {
       this.updateBackendStatusBadge(e.detail.available);
     });
 
-    // Tìm kiếm với debounce
+    // Tìm kiếm từ khóa có độ trễ (debounce)
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
@@ -75,7 +75,7 @@ class EcoApp {
       });
     }
 
-    // Bộ lọc select
+    // Lắng nghe thay đổi ở 3 bộ lọc select
     ['filterStatus', 'filterType', 'filterSeverity'].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
@@ -100,10 +100,10 @@ class EcoApp {
       el.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200';
     } else {
       el.innerHTML = `
-        <span class="flex h-2 w-2 rounded-full bg-amber-500"></span>
-        <span class="text-xs font-medium text-amber-900">Mô phỏng dữ liệu (25 điểm Cao Lãnh)</span>
+        <span class="flex h-2 w-2 rounded-full bg-rose-500"></span>
+        <span class="text-xs font-medium text-rose-800">Mất kết nối máy chủ Backend</span>
       `;
-      el.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200';
+      el.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-50 border border-rose-200';
     }
   }
 
@@ -120,19 +120,19 @@ class EcoApp {
       const roleEl = document.getElementById('userNavRole');
       if (nameEl) nameEl.textContent = this.currentUser.full_name;
       if (roleEl) {
-        const roleNames = {
-          CITIZEN: 'Người dân',
-          OFFICER: 'Cán bộ Môi trường / Đô thị',
-          MANAGER: 'Lãnh đạo / Quản lý TNMT'
+        const roleDescriptions = {
+          'Người dân': 'Công dân phản ánh',
+          'Cán bộ': 'Cán bộ Môi trường / Đô thị',
+          'Quản lý': 'Lãnh đạo / Quản lý TNMT'
         };
-        roleEl.textContent = roleNames[this.currentUser.role] || this.currentUser.role;
+        roleEl.textContent = roleDescriptions[this.currentUser.role] || this.currentUser.role;
       }
 
       if (currentRoleBadge) {
-        currentRoleBadge.textContent = this.currentUser.role;
+        currentRoleBadge.textContent = this.currentUser.role.toUpperCase();
         currentRoleBadge.className = `px-2 py-0.5 rounded text-xs font-bold ${
-          this.currentUser.role === 'MANAGER' ? 'bg-purple-100 text-purple-700' :
-          this.currentUser.role === 'OFFICER' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'
+          this.currentUser.role === 'Quản lý' ? 'bg-purple-100 text-purple-700' :
+          this.currentUser.role === 'Cán bộ' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'
         }`;
       }
     } else {
@@ -143,16 +143,6 @@ class EcoApp {
         currentRoleBadge.className = 'px-2 py-0.5 rounded text-xs font-bold bg-slate-100 text-slate-600';
       }
     }
-
-    // Đồng bộ nút chọn vai trò nhanh
-    document.querySelectorAll('.role-preset-btn').forEach(btn => {
-      const role = btn.getAttribute('data-role');
-      if (this.currentUser && this.currentUser.role === role) {
-        btn.classList.add('ring-2', 'ring-emerald-600', 'bg-emerald-50');
-      } else {
-        btn.classList.remove('ring-2', 'ring-emerald-600', 'bg-emerald-50');
-      }
-    });
   }
 
   renderFilterPollutionTypes() {
@@ -185,19 +175,33 @@ class EcoApp {
       window.mapController.renderMarkers(this.reports);
       await this.loadStats();
     } catch (err) {
-      this.showToast('Không thể tải danh sách phản ánh', 'error');
+      this.showToast('Không thể tải danh sách phản ánh từ máy chủ', 'error');
     }
   }
 
   async loadStats() {
     try {
       const stats = await window.apiService.getStats();
-      const overview = stats.overview || {};
 
-      document.getElementById('statTotal')?.replaceChildren(document.createTextNode(overview.total || 0));
-      document.getElementById('statPending')?.replaceChildren(document.createTextNode(overview.pending || 0));
-      document.getElementById('statProcessing')?.replaceChildren(document.createTextNode(overview.processing || 0));
-      document.getElementById('statCompleted')?.replaceChildren(document.createTextNode(overview.completed || 0));
+      // Tính toán số liệu tổng quan từ mảng byStatus trả về từ SQL Server
+      const byStatus = stats.byStatus || [];
+      let total = 0;
+      let pending = 0;
+      let processing = 0;
+      let completed = 0;
+
+      byStatus.forEach(item => {
+        const count = Number(item.count) || 0;
+        total += count;
+        if (item.status === 'Chờ tiếp nhận') pending += count;
+        if (['Đã tiếp nhận', 'Đã xác minh', 'Đang xử lý'].includes(item.status)) processing += count;
+        if (item.status === 'Hoàn thành') completed += count;
+      });
+
+      document.getElementById('statTotal')?.replaceChildren(document.createTextNode(total));
+      document.getElementById('statPending')?.replaceChildren(document.createTextNode(pending));
+      document.getElementById('statProcessing')?.replaceChildren(document.createTextNode(processing));
+      document.getElementById('statCompleted')?.replaceChildren(document.createTextNode(completed));
       document.getElementById('statAvgTime')?.replaceChildren(document.createTextNode(`${stats.avgResolutionHours || 0}h`));
 
       window.chartController.renderDashboardCharts(stats);
@@ -237,19 +241,16 @@ class EcoApp {
         </div>
       `;
       if (container) container.innerHTML = emptyHtml;
-      if (tableBody) tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-550">${emptyHtml}</td></tr>`;
+      if (tableBody) tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-500">${emptyHtml}</td></tr>`;
       return;
     }
 
-    // 1. Render Danh sách Card cho tab Bản đồ
+    // 1. Hiển thị danh sách thẻ bên cạnh bản đồ
     if (container) {
       container.innerHTML = this.reports.map(r => {
         const severity = window.mapController.getSeverityColor(r.severity_level);
         const statusClass = window.mapController.getStatusBadgeClass(r.status);
         const statusText = window.mapController.getStatusText(r.status);
-        const dateStr = new Date(r.created_at).toLocaleDateString('vi-VN', {
-          day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
-        });
 
         return `
           <div class="eco-card bg-white p-3.5 rounded-xl border border-slate-200/80 cursor-pointer" onclick="window.app.openReportDetail(${r.id})">
@@ -295,7 +296,7 @@ class EcoApp {
       }).join('');
     }
 
-    // 2. Render Table cho tab Danh sách mở rộng
+    // 2. Hiển thị bảng đầy đủ ở tab Danh sách phản ánh
     if (tableBody) {
       tableBody.innerHTML = this.reports.map(r => {
         const severity = window.mapController.getSeverityColor(r.severity_level);
@@ -345,7 +346,6 @@ class EcoApp {
     this.currentTab = tabId;
     window.location.hash = tabId;
 
-    // Toggle navigation buttons
     document.querySelectorAll('[data-tab]').forEach(btn => {
       if (btn.getAttribute('data-tab') === tabId) {
         btn.classList.add('nav-tab-active');
@@ -354,7 +354,6 @@ class EcoApp {
       }
     });
 
-    // Toggle view containers
     document.querySelectorAll('.view-tab-content').forEach(view => {
       view.classList.add('hidden');
     });
@@ -373,7 +372,7 @@ class EcoApp {
     }
   }
 
-  // --- REPORT DETAIL MODAL ---
+  // --- MODAL CHI TIẾT PHẢN ÁNH ---
   async openReportDetail(reportId) {
     try {
       const report = await window.apiService.getReportById(reportId);
@@ -408,13 +407,8 @@ class EcoApp {
         statusBadge.className = `px-3 py-1 rounded-full text-xs font-semibold ${statusClass}`;
       }
 
-      // Render hình ảnh Hiện trường (Trước / Sau)
       this.renderReportImages(report.images || []);
-
-      // Render nhật ký xử lý
       this.renderProcessLogs(report.logs || []);
-
-      // Render Officer Control Panel (nếu đủ quyền)
       this.renderOfficerControlPanel(report);
 
       modal.classList.remove('hidden');
@@ -436,8 +430,8 @@ class EcoApp {
       return;
     }
 
-    const beforeImgs = images.filter(img => img.image_type === 'BEFORE');
-    const afterImgs = images.filter(img => img.image_type === 'AFTER');
+    const beforeImgs = images.filter(img => img.image_type === 'Trước xử lý' || img.image_type === 'BEFORE');
+    const afterImgs = images.filter(img => img.image_type === 'Sau xử lý' || img.image_type === 'AFTER');
 
     let html = '';
 
@@ -507,7 +501,7 @@ class EcoApp {
             <div class="timeline-node">
               <div class="flex items-center gap-2 mb-1 flex-wrap">
                 <span class="font-semibold text-xs text-slate-800">${log.updated_by_name || 'Cán bộ'}</span>
-                <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-bold">${log.role || 'OFFICER'}</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-bold">Xử lý hồ sơ</span>
                 <span class="text-[11px] text-slate-400 ml-auto">${dateStr}</span>
               </div>
               <div class="text-xs text-slate-600 mb-1.5">
@@ -529,7 +523,8 @@ class EcoApp {
     const panel = document.getElementById('officerControlPanel');
     if (!panel) return;
 
-    const isAuthorized = this.currentUser && ['OFFICER', 'MANAGER'].includes(this.currentUser.role);
+    // Chỉ hiển thị khung duyệt bài cho vai trò Cán bộ hoặc Quản lý
+    const isAuthorized = this.currentUser && ['Cán bộ', 'Quản lý'].includes(this.currentUser.role);
     if (!isAuthorized) {
       panel.classList.add('hidden');
       return;
@@ -537,21 +532,16 @@ class EcoApp {
 
     panel.classList.remove('hidden');
 
-    // Populate cán bộ phụ trách
     const officerSelect = document.getElementById('updateAssignedTo');
     if (officerSelect) {
-      officerSelect.innerHTML = '<option value="">-- Giữ nguyên hoặc chưa phân công --</option>';
-      const officers = window.localDataStore.getOfficers();
-      officers.forEach(off => {
-        const opt = document.createElement('option');
-        opt.value = off.id;
-        opt.textContent = `${off.full_name} (${off.role === 'MANAGER' ? 'Quản lý' : 'Cán bộ'})`;
-        if (report.assigned_to === off.id) opt.selected = true;
-        officerSelect.appendChild(opt);
-      });
+      officerSelect.innerHTML = `
+        <option value="">-- Giữ nguyên hoặc chưa phân công --</option>
+        <option value="4" ${report.assigned_to === 4 ? 'selected' : ''}>Phạm Minh Tuấn (Cán bộ Đô thị)</option>
+        <option value="5" ${report.assigned_to === 5 ? 'selected' : ''}>Võ Thị Kim Oanh (Cán bộ Môi trường)</option>
+        <option value="6" ${report.assigned_to === 6 ? 'selected' : ''}>Đặng Quốc Hùng (Trưởng phòng TNMT)</option>
+      `;
     }
 
-    // Set current status in select
     const statusSelect = document.getElementById('updateStatus');
     if (statusSelect) {
       statusSelect.value = report.status;
@@ -563,7 +553,7 @@ class EcoApp {
     if (modal) modal.classList.add('hidden');
   }
 
-  // --- SUBMIT STATUS UPDATE (Officer / Manager) ---
+  // --- CẬP NHẬT TIẾN ĐỘ XỬ LÝ (Cán bộ / Quản lý) ---
   async handleStatusUpdateSubmit(e) {
     e.preventDefault();
     if (!this.currentReportDetail) return;
@@ -592,18 +582,17 @@ class EcoApp {
     }
   }
 
-  // --- CREATE REPORT MODAL ---
+  // --- MODAL GỬI PHẢN ÁNH MỚI (Bắt buộc đăng nhập thật) ---
   openCreateModal() {
-    if (!this.currentUser) {
-      this.showToast('Vui lòng đăng nhập hoặc chọn vai trò Người dân để gửi phản ánh!', 'warning');
-      this.quickLoginAs('CITIZEN');
+    if (!this.currentUser || !window.apiService.getToken()) {
+      window.location.href = 'login.html';
+      return;
     }
 
     const modal = document.getElementById('createReportModal');
     if (!modal) return;
     modal.classList.remove('hidden');
 
-    // Mở picker map Leaflet
     const defaultCoords = [10.4535, 105.6308];
     window.mapController.initPickerMap('pickerMap', defaultCoords, (lat, lng) => {
       document.getElementById('createLatitude').value = lat;
@@ -650,13 +639,10 @@ class EcoApp {
 
       this.showToast(res.message || 'Gửi phản ánh thành công!', 'success');
       this.closeCreateModal();
-
-      // Reset form
       document.getElementById('createReportForm').reset();
 
       await this.refreshData();
 
-      // Bay tới phản ánh vừa tạo trên bản đồ
       if (res.reportId) {
         this.switchTab('map');
         window.mapController.flyToReport(latitude, longitude);
@@ -666,91 +652,16 @@ class EcoApp {
     }
   }
 
-  // --- QUICK ROLE SWITCHER (Demo Mode) ---
-  quickLoginAs(role) {
-    const users = JSON.parse(localStorage.getItem('eco_users_v1') || '[]');
-    let target = null;
-    if (role === 'CITIZEN') target = users.find(u => u.role === 'CITIZEN');
-    if (role === 'OFFICER') target = users.find(u => u.role === 'OFFICER');
-    if (role === 'MANAGER') target = users.find(u => u.role === 'MANAGER');
-
-    if (target) {
-      const dummyToken = 'mock_jwt_' + target.id + '_' + Date.now();
-      window.apiService.setSession(dummyToken, target);
-      this.showToast(`Đã chuyển sang vai trò: ${target.full_name} (${role})`, 'success');
-    }
-  }
-
   logout() {
     window.apiService.logout();
     this.showToast('Đã đăng xuất tài khoản', 'info');
   }
 
-  // --- AUTH MODAL ---
-  openAuthModal(defaultMode = 'login') {
-    const modal = document.getElementById('authModal');
-    if (!modal) return;
-    this.switchAuthMode(defaultMode);
-    modal.classList.remove('hidden');
+  // --- CHUYỂN HƯỚNG SANG TRANG ĐĂNG NHẬP RIÊNG ---
+  openAuthModal() {
+    window.location.href = 'login.html';
   }
 
-  closeAuthModal() {
-    const modal = document.getElementById('authModal');
-    if (modal) modal.classList.add('hidden');
-  }
-
-  switchAuthMode(mode) {
-    const loginForm = document.getElementById('loginFormContainer');
-    const registerForm = document.getElementById('registerFormContainer');
-    const tabLogin = document.getElementById('tabAuthLogin');
-    const tabRegister = document.getElementById('tabAuthRegister');
-
-    if (mode === 'login') {
-      loginForm?.classList.remove('hidden');
-      registerForm?.classList.add('hidden');
-      tabLogin?.classList.add('border-emerald-600', 'text-emerald-700', 'font-bold');
-      tabRegister?.classList.remove('border-emerald-600', 'text-emerald-700', 'font-bold');
-    } else {
-      loginForm?.classList.add('hidden');
-      registerForm?.classList.remove('hidden');
-      tabRegister?.classList.add('border-emerald-600', 'text-emerald-700', 'font-bold');
-      tabLogin?.classList.remove('border-emerald-600', 'text-emerald-700', 'font-bold');
-    }
-  }
-
-  async handleLoginSubmit(e) {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value;
-
-    try {
-      const res = await window.apiService.login(email, password);
-      this.showToast(res.message || 'Đăng nhập thành công!', 'success');
-      this.closeAuthModal();
-      document.getElementById('loginForm').reset();
-    } catch (err) {
-      this.showToast(err.message || 'Đăng nhập thất bại', 'error');
-    }
-  }
-
-  async handleRegisterSubmit(e) {
-    e.preventDefault();
-    const full_name = document.getElementById('regFullName').value.trim();
-    const email = document.getElementById('regEmail').value.trim();
-    const phone = document.getElementById('regPhone').value.trim();
-    const password = document.getElementById('regPassword').value;
-
-    try {
-      const res = await window.apiService.register({ full_name, email, phone, password });
-      this.showToast(res.message || 'Đăng ký thành công! Hãy đăng nhập.', 'success');
-      this.switchAuthMode('login');
-      document.getElementById('loginEmail').value = email;
-    } catch (err) {
-      this.showToast(err.message || 'Đăng ký thất bại', 'error');
-    }
-  }
-
-  // Preset sample photo helper for fast demo testing
   setPresetPhoto(url) {
     const input = document.getElementById('createImageUrl');
     if (input) {
@@ -759,7 +670,7 @@ class EcoApp {
     }
   }
 
-  // --- TOAST NOTIFICATIONS ---
+  // --- THÔNG BÁO NỔI (TOAST) ---
   showToast(message, type = 'info') {
     const container = document.getElementById('toastContainer');
     if (!container) return;
@@ -794,4 +705,3 @@ window.app = new EcoApp();
 document.addEventListener('DOMContentLoaded', () => {
   window.app.init();
 });
-

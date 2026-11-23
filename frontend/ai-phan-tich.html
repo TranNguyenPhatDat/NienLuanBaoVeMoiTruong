@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Phân Tích Ảnh Hiện Trường - MT Xanh & Cuộc Sống</title>
+
+  <!-- Google Fonts: Be Vietnam Pro -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Be Vietnam Pro"', 'system-ui', 'sans-serif'] },
+          colors: {
+            eco: {
+              50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 300: '#86efac',
+              400: '#4ade80', 500: '#22c55e', 600: '#16a34a', 700: '#15803d',
+              800: '#166534', 900: '#14532d'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen flex flex-col bg-[#f5f7f6] text-slate-900 font-sans antialiased">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+      <a href="index.html" class="flex items-center gap-2.5 min-w-0">
+        <div class="relative w-10 h-10 rounded-full overflow-hidden border border-eco-200 bg-eco-50 flex items-center justify-center shrink-0">
+          <svg id="headerSvgFallback" viewBox="0 0 64 64" class="w-9 h-9">
+            <circle cx="32" cy="32" r="30" fill="#16a34a"/>
+            <text x="32" y="37" text-anchor="middle" font-size="14" font-weight="800" fill="#ffffff">MT</text>
+          </svg>
+          <img
+            src="/images/logonienluan.jpg"
+            data-fallback-idx="0"
+            onload="this.classList.remove('hidden'); document.getElementById('headerSvgFallback').classList.add('hidden');"
+            onerror="handleLogoError(this)"
+            alt="Logo MT Xanh"
+            class="hidden absolute inset-0 w-full h-full object-cover"
+          >
+        </div>
+        <div class="leading-tight truncate">
+          <div class="text-sm sm:text-base font-extrabold text-eco-700 truncate">
+            MT XANH <span class="text-amber-500">&</span> <span class="text-rose-600">Cuộc sống</span>
+          </div>
+          <div class="text-[11px] text-slate-500 truncate">AI Phân Tích Ảnh Hiện Trường • Cao Lãnh</div>
+        </div>
+      </a>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <a href="chuyen-muc.html" class="hidden sm:inline-flex px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors">
+          Chuyên mục
+        </a>
+        <a href="index.html" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-eco-700 hover:bg-eco-800 text-white text-xs font-bold transition-colors shadow-sm">
+          <span>← Trang chủ</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 py-5 sm:py-7 space-y-6">
+
+    <!-- Giới thiệu ngắn -->
+    <section class="bg-gradient-to-r from-eco-800 via-eco-700 to-emerald-600 text-white rounded-2xl p-5 sm:p-6 shadow-md">
+      <div class="flex flex-wrap items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 rounded-full bg-white/15 text-[11px] font-bold uppercase tracking-wider">
+          Hỗ trợ trên điện thoại & máy tính
+        </span>
+        <span class="px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-200 text-[11px] font-bold">
+          Định dạng Bản tin nhận định
+        </span>
+      </div>
+      <h1 class="text-lg sm:text-2xl font-extrabold tracking-tight">
+        Chụp hoặc tải ảnh hiện trường — Xuất bản tin phân tích mức độ ô nhiễm
+      </h1>
+      <p class="text-xs sm:text-sm text-eco-50/95 mt-1.5 leading-relaxed max-w-3xl">
+        Phù hợp để chụp trực tiếp trên điện thoại hoặc chọn ảnh từ thư viện/mạng xã hội, tự động tổng hợp thành khung bài báo nhận định sơ bộ về mức độ ô nhiễm và khuyến nghị xử lý.
+      </p>
+    </section>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+      <!-- Cột trái: Chụp / Chọn ảnh & Thông số -->
+      <section class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-sm space-y-4">
+        <h2 class="text-sm font-extrabold uppercase tracking-wide text-slate-800 flex items-center gap-2">
+          <span class="w-2 h-4 rounded-xs bg-eco-700 inline-block"></span>
+          <span>1. Tải ảnh hoặc chụp trực tiếp</span>
+        </h2>
+
+        <!-- Nút chụp camera / chọn thư viện thân thiện cho điện thoại -->
+        <div class="grid grid-cols-2 gap-2.5">
+          <label class="cursor-pointer flex flex-col items-center justify-center p-3.5 rounded-2xl border-2 border-dashed border-eco-400 bg-eco-50/60 hover:bg-eco-50 text-eco-800 text-center transition-colors">
+            <svg class="w-6 h-6 mb-1 text-eco-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <span class="text-xs font-extrabold">Chụp ảnh (Camera)</span>
+            <span class="text-[10px] text-eco-700/80 mt-0.5">Mở máy ảnh điện thoại</span>
+            <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="onImageSelected(event)" class="hidden">
+          </label>
+
+          <label class="cursor-pointer flex flex-col items-center justify-center p-3.5 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-700 text-center transition-colors">
+            <svg class="w-6 h-6 mb-1 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <span class="text-xs font-extrabold">Chọn ảnh có sẵn</span>
+            <span class="text-[10px] text-slate-500 mt-0.5">Thư viện / Ảnh tải về</span>
+            <input type="file" id="galleryInput" accept="image/*" onchange="onImageSelected(event)" class="hidden">
+          </label>
+        </div>
+
+        <!-- Khung xem trước ảnh -->
+        <div id="previewBox" class="relative w-full aspect-video rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center">
+          <div id="previewPlaceholder" class="text-center p-4 text-xs text-slate-400">
+            Chưa có ảnh nào được chọn. Hãy chụp ảnh hoặc chọn ảnh để phân tích.
+          </div>
+          <img id="previewImage" src="" alt="Ảnh hiện trường" class="hidden w-full h-full object-cover">
+        </div>
+
+        <!-- Tùy chọn ngữ cảnh hỗ trợ phân tích -->
+        <div class="space-y-3 text-xs">
+          <div>
+            <label for="contextCategory" class="block font-bold text-slate-700 mb-1">Chuyên mục / Nhóm hiện trường</label>
+            <select id="contextCategory" onchange="reAnalyzeIfReady()" class="w-full py-2.5 px-3 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-eco-600 focus:outline-none">
+              <option value="auto">Tự động nhận diện từ đặc trưng ảnh</option>
+              <option value="rac-thai">Môi trường - Tài nguyên (Rác thải / Điểm tập kết)</option>
+              <option value="nguon-nuoc">Nước & Cuộc sống (Kênh rạch / Nước sinh hoạt)</option>
+              <option value="khong-khi">Môi trường - Tài nguyên (Khói bụi / Đốt rác / Mùi hôi)</option>
+              <option value="song-xanh">Cuộc sống xanh (Phân loại rác / Cảnh quan đô thị)</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="contextLocation" class="block font-bold text-slate-700 mb-1">Khu vực / Địa điểm ghi nhận</label>
+            <input type="text" id="contextLocation" value="TP. Cao Lãnh, Đồng Tháp" oninput="reAnalyzeIfReady()" placeholder="Ví dụ: Phường 1, Rạch Cống Ông Việt, TP. Cao Lãnh..."
+              class="w-full py-2.5 px-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-eco-600 focus:outline-none">
+          </div>
+
+          <button type="button" onclick="runAnalysis()" class="w-full py-3 rounded-xl bg-eco-700 hover:bg-eco-800 text-white font-extrabold text-xs tracking-wide shadow-sm transition-colors">
+            Phân tích & Xuất bản tin ngay
+          </button>
+        </div>
+      </section>
+
+      <!-- Cột phải: Kết quả dạng Bản tin / Bài báo nhận định -->
+      <section class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-4 rounded-xs bg-rose-600 inline-block"></span>
+            <h2 class="text-sm font-extrabold uppercase tracking-wide text-slate-800">
+              2. Bản tin nhận định hiện trường
+            </h2>
+          </div>
+          <span id="articleTimestamp" class="text-[11px] text-slate-400 font-medium">Chờ dữ liệu ảnh</span>
+        </div>
+
+        <!-- Trạng thái trống ban đầu -->
+        <div id="emptyArticleState" class="py-10 text-center space-y-2 text-xs text-slate-400">
+          <p class="font-semibold text-slate-500">Chưa có bản tin phân tích nào được tạo</p>
+          <p>Sau khi bạn chụp hoặc chọn một bức ảnh, kết quả sẽ hiển thị dưới dạng bài báo nhận định tại đây.</p>
+        </div>
+
+        <!-- Khung bài báo phân tích -->
+        <article id="articleResultCard" class="hidden space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span id="artCategoryBadge" class="px-3 py-1 rounded-full bg-eco-100 text-eco-800 text-[11px] font-extrabold">
+              Môi trường - Tài nguyên
+            </span>
+            <span id="artSeverityBadge" class="px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-[11px] font-extrabold">
+              Mức độ: Trung bình
+            </span>
+          </div>
+
+          <!-- Tiêu đề giống bài báo -->
+          <h3 id="artHeadline" class="text-lg sm:text-xl font-extrabold text-slate-900 leading-snug"></h3>
+
+          <!-- Sapo / Tóm tắt mở đầu -->
+          <p id="artSapo" class="text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 p-3.5 rounded-xl border-l-4 border-eco-600 leading-relaxed"></p>
+
+          <!-- Thanh mức độ ô nhiễm ước lượng -->
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+            <div class="flex items-center justify-between text-xs font-bold">
+              <span class="text-slate-700">Chỉ số mức độ ô nhiễm ước lượng từ ảnh</span>
+              <span id="artScoreText" class="text-eco-700">0/100</span>
+            </div>
+            <div class="w-full h-2.5 rounded-full bg-slate-200 overflow-hidden">
+              <div id="artScoreBar" class="h-full rounded-full bg-amber-500 transition-all duration-300" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <!-- Nội dung bài báo chi tiết -->
+          <div class="space-y-3 text-xs sm:text-sm text-slate-700 leading-relaxed">
+            <div>
+              <h4 class="font-extrabold text-slate-900 mb-1">Nhận định đặc trưng từ hình ảnh</h4>
+              <p id="artObservation"></p>
+            </div>
+
+            <div>
+              <h4 class="font-extrabold text-slate-900 mb-1">Đánh giá tác động & Khuyến nghị xử lý</h4>
+              <p id="artRecommendation"></p>
+            </div>
+          </div>
+
+          <!-- Lưu ý chuyên môn -->
+          <div class="p-3 rounded-xl bg-amber-50/80 border border-amber-200/80 text-[11px] text-amber-900 leading-relaxed">
+            <strong>Lưu ý:</strong> Bản tin này là kết quả phân tích sơ bộ hỗ trợ sàng lọc từ hình ảnh cung cấp; cần kiểm tra thực tế tại hiện trường để xác định nguyên nhân và mức độ chính xác.
+          </div>
+
+          <!-- Các nút thao tác nhanh -->
+          <div class="pt-2 flex flex-wrap items-center gap-2.5">
+            <button type="button" onclick="copyArticleText()" class="flex-1 min-w-[140px] py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors">
+              Sao chép bản tin
+            </button>
+            <button type="button" onclick="sendDraftToMainPage()" class="flex-1 min-w-[170px] py-2.5 px-4 rounded-xl bg-eco-700 hover:bg-eco-800 text-white text-xs font-bold transition-colors">
+              Lưu nháp sang Trang chủ →
+            </button>
+          </div>
+
+          <div id="actionToast" class="hidden text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-3.5 py-2"></div>
+        </article>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="bg-white border-t border-slate-200 py-4 mt-8 text-xs text-slate-500">
+    <div class="max-w-5xl mx-auto px-4 flex flex-wrap items-center justify-between gap-2">
+      <span class="font-bold text-slate-700">MT Xanh & Cuộc Sống</span>
+      <span>Trang độc lập: ai-phan-tich.html</span>
+    </div>
+  </footer>
+
+  <!-- Canvas ẩn phục vụ phân tích đặc trưng pixel trên trình duyệt -->
+  <canvas id="analysisCanvas" class="hidden"></canvas>
+
+  <script>
+    const LOGO_CANDIDATES = [
+      '/images/logonienluan.jpg',
+      'images/logonienluan.jpg',
+      'http://localhost:5000/images/logonienluan.jpg'
+    ];
+
+    let currentImageDataUrl = '';
+    let currentImageName = '';
+    let latestArticlePayload = null;
+
+    function handleLogoError(img) {
+      const idx = Number(img.dataset.fallbackIdx || 0) + 1;
+      if (idx < LOGO_CANDIDATES.length) {
+        img.dataset.fallbackIdx = String(idx);
+        img.src = LOGO_CANDIDATES[idx];
+      } else {
+        img.classList.add('hidden');
+        const svg = document.getElementById('headerSvgFallback');
+        if (svg) svg.classList.remove('hidden');
+      }
+    }
+
+    function onImageSelected(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      currentImageName = file.name || 'anh-hien-truong.jpg';
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        currentImageDataUrl = e.target.result;
+        const imgEl = document.getElementById('previewImage');
+        const placeholderEl = document.getElementById('previewPlaceholder');
+        imgEl.src = currentImageDataUrl;
+        imgEl.classList.remove('hidden');
+        placeholderEl.classList.add('hidden');
+        runAnalysis();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function reAnalyzeIfReady() {
+      if (currentImageDataUrl) {
+        runAnalysis();
+      }
+    }
+
+    function computeImageStats(imgElement) {
+      const canvas = document.getElementById('analysisCanvas');
+      const ctx = canvas.getContext('2d');
+      const sampleW = 120;
+      const sampleH = 120;
+      canvas.width = sampleW;
+      canvas.height = sampleH;
+      ctx.drawImage(imgElement, 0, 0, sampleW, sampleH);
+
+      const data = ctx.getImageData(0, 0, sampleW, sampleH).data;
+      let sumLuma = 0;
+      let sumSat = 0;
+      let darkOrClutteredCount = 0;
+      let blueWaterCount = 0;
+      let greenCount = 0;
+      const totalPixels = sampleW * sampleH;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+
+        const luma = 0.299 * r + 0.587 * g + 0.114 * b;
+        const maxC = Math.max(r, g, b);
+        const minC = Math.min(r, g, b);
+        const sat = maxC === 0 ? 0 : (maxC - minC) / maxC;
+
+        sumLuma += luma;
+        sumSat += sat;
+
+        if (luma < 75 || sat > 0.55) {
+          darkOrClutteredCount++;
+        }
+        if (b > r + 15 && b > g + 10 && luma > 70) {
+          blueWaterCount++;
+        }
+        if (g > r + 12 && g > b + 8) {
+          greenCount++;
+        }
+      }
+
+      return {
+        avgLuma: sumLuma / totalPixels,
+        avgSat: sumSat / totalPixels,
+        anomalyRatio: darkOrClutteredCount / totalPixels,
+        blueRatio: blueWaterCount / totalPixels,
+        greenRatio: greenCount / totalPixels
+      };
+    }
+
+    function runAnalysis() {
+      const imgEl = document.getElementById('previewImage');
+      if (!currentImageDataUrl || !imgEl.src) {
+        showToast('Hãy chụp hoặc chọn một bức ảnh trước khi phân tích.', true);
+        return;
+      }
+
+      const selectedCat = document.getElementById('contextCategory').value;
+      const location = (document.getElementById('contextLocation').value || 'TP. Cao Lãnh, Đồng Tháp').trim();
+      const stats = computeImageStats(imgEl);
+
+      // Xác định chuyên mục nếu chọn Tự động
+      let resolvedCategoryKey = selectedCat;
+      if (selectedCat === 'auto') {
+        if (stats.blueRatio > 0.28) {
+          resolvedCategoryKey = 'nguon-nuoc';
+        } else if (stats.avgLuma < 85 && stats.anomalyRatio > 0.45) {
+          resolvedCategoryKey = 'khong-khi';
+        } else if (stats.greenRatio > 0.32 && stats.anomalyRatio < 0.28) {
+          resolvedCategoryKey = 'song-xanh';
+        } else {
+          resolvedCategoryKey = 'rac-thai';
+        }
+      }
+
+      // Tính điểm mức độ ô nhiễm ước lượng (0 - 100)
+      let rawScore = Math.round(
+        30 +
+        stats.anomalyRatio * 55 +
+        (stats.avgLuma < 90 ? 12 : 0) +
+        (resolvedCategoryKey === 'song-xanh' ? -20 : 0)
+      );
+      rawScore = Math.max(15, Math.min(92, rawScore));
+
+      let severityLabel = 'Trung bình';
+      let badgeClasses = 'px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-[11px] font-extrabold';
+      let barColorClass = 'h-full rounded-full bg-amber-500 transition-all duration-300';
+
+      if (rawScore >= 70) {
+        severityLabel = 'Nghiêm trọng';
+        badgeClasses = 'px-3 py-1 rounded-full bg-rose-100 text-rose-800 text-[11px] font-extrabold';
+        barColorClass = 'h-full rounded-full bg-rose-600 transition-all duration-300';
+      } else if (rawScore < 40) {
+        severityLabel = 'Thấp / Tích cực';
+        badgeClasses = 'px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-extrabold';
+        barColorClass = 'h-full rounded-full bg-emerald-600 transition-all duration-300';
+      }
+
+      const templates = {
+        'rac-thai': {
+          badge: 'Môi trường - Tài nguyên',
+          headline: `Ghi nhận điểm tập kết / ùn ứ rác thải tại ${location} — Mức độ ${severityLabel.toLowerCase()}`,
+          sapo: `Hình ảnh hiện trường tại ${location} cho thấy dấu hiệu phát sinh chất thải/vật thể không đồng nhất trên bề mặt, cần sớm kiểm tra điểm thu gom và giữ vệ sinh khu vực xung quanh.`,
+          observation: `Qua phân tích đặc trưng hình ảnh, độ biến thiên màu sắc và mật độ vùng tương phản/tối màu đạt mức đáng chú ý (chỉ số ước lượng ${rawScore}/100, độ sáng trung bình ${Math.round(stats.avgLuma)}). Bức ảnh phản ánh khu vực có nhiều chi tiết rời rạc hoặc vật liệu lẫn lộn cần được rà soát thực tế.`,
+          recommendation: `Người dân nên ghi kèm mốc đường/hẻm/khóm/ấp cụ thể khi gửi phản ánh; tránh đốt rác tự phát gây khói độc. Bộ phận phụ trách vệ sinh môi trường cần kiểm tra tần suất thu gom và nhắc nhở xả rác đúng nơi quy định tại ${location}.`
+        },
+        'nguon-nuoc': {
+          badge: 'Nước & Cuộc sống',
+          headline: `Theo dõi hiện trạng mặt nước & kênh rạch tại ${location} — Cảnh báo mức ${severityLabel.toLowerCase()}`,
+          sapo: `Bức ảnh ghi nhận khu vực mặt nước tại ${location} với mức cảnh báo ${severityLabel.toLowerCase()} (${rawScore}/100), gợi ý cần theo dõi thêm độ đục, màu nước và nguy cơ xả thải quanh tuyến rạch.`,
+          observation: `Phân tích khung hình ghi nhận vùng mặt nước chiếm tỷ lệ rõ rệt cùng các sắc độ biến đổi (${Math.round(stats.anomalyRatio * 100)}% vùng có sắc thái/tương phản lệch chuẩn). Đây là cơ sở ban đầu để đánh dấu điểm cần giám sát nguồn nước mặt.`,
+          recommendation: `Hạn chế sử dụng trực tiếp nước mặt chưa qua xử lý cho sinh hoạt khi thấy màu nước bất thường hoặc có mùi lạ. Đề nghị cơ quan chức năng kiểm tra nguồn xả thải ven rạch và cập nhật tình trạng nguồn nước tại ${location}.`
+        },
+        'khong-khi': {
+          badge: 'Môi trường - Tài nguyên',
+          headline: `Cảnh báo khói bụi / giảm tầm nhìn môi trường tại ${location} — Mức ${severityLabel.toLowerCase()}`,
+          sapo: `Hình ảnh hiện trường tại ${location} có đặc trưng giảm độ sáng hoặc khói/mù cục bộ (chỉ số ước lượng ${rawScore}/100), cần lưu ý ảnh hưởng đến không khí và sức khỏe cộng đồng lân cận.`,
+          observation: `Chỉ số độ sáng trung bình của ảnh đo được ở mức ${Math.round(stats.avgLuma)}/255 với vùng biến đổi sắc độ ${Math.round(stats.anomalyRatio * 100)}%, phản ánh trạng thái không gian kém quang đãng hoặc có nguồn phát tán khói/bụi/mùi hôi trong khu vực.`,
+          recommendation: `Người dân nhạy cảm, người lớn tuổi và trẻ nhỏ nên đeo khẩu trang và hạn chế tiếp xúc lâu tại khu vực có khói bụi hoặc mùi khó chịu. Cơ quan chuyên môn cần rà soát nguồn đốt rác, bụi xây dựng hoặc phát thải tại ${location}.`
+        },
+        'song-xanh': {
+          badge: 'Cuộc sống xanh',
+          headline: `Đánh giá cảnh quan & không gian xanh tại ${location} — Mức độ ${severityLabel.toLowerCase()}`,
+          sapo: `Hình ảnh tại ${location} phản ánh hiện trạng không gian và cảnh quan đô thị với mức đánh giá ${severityLabel.toLowerCase()} (${rawScore}/100), hướng tới duy trì môi trường sạch đẹp và phân loại rác bền vững.`,
+          observation: `Tỷ lệ sắc xanh/không gian thoáng trong ảnh đạt mức tương đối ổn định, độ lệch bất thường thấp hơn so với các điểm ô nhiễm nặng. Tuy nhiên, vẫn cần duy trì thói quen phân loại rác tại nguồn và giữ gìn mỹ quan lâu dài.`,
+          recommendation: `Tiếp tục lan tỏa mô hình phân loại rác tại nguồn, hạn chế nhựa dùng một lần và chăm sóc cây xanh cộng đồng tại ${location} để giữ vững không gian sống xanh sạch.`
+        }
+      };
+
+      const tpl = templates[resolvedCategoryKey] || templates['rac-thai'];
+      const nowStr = new Date().toLocaleString('vi-VN');
+
+      document.getElementById('emptyArticleState').classList.add('hidden');
+      document.getElementById('articleResultCard').classList.remove('hidden');
+      document.getElementById('articleTimestamp').textContent = `Cập nhật: ${nowStr}`;
+
+      document.getElementById('artCategoryBadge').textContent = tpl.badge;
+      document.getElementById('artSeverityBadge').className = badgeClasses;
+      document.getElementById('artSeverityBadge').textContent = `Mức độ: ${severityLabel}`;
+      document.getElementById('artHeadline').textContent = tpl.headline;
+      document.getElementById('artSapo').textContent = tpl.sapo;
+      document.getElementById('artScoreText').textContent = `${rawScore}/100`;
+      document.getElementById('artScoreBar').className = barColorClass;
+      document.getElementById('artScoreBar').style.width = `${rawScore}%`;
+      document.getElementById('artObservation').textContent = tpl.observation;
+      document.getElementById('artRecommendation').textContent = tpl.recommendation;
+
+      latestArticlePayload = {
+        createdAt: nowStr,
+        imageName: currentImageName,
+        location,
+        category: tpl.badge,
+        severity: severityLabel,
+        score: rawScore,
+        headline: tpl.headline,
+        sapo: tpl.sapo,
+        observation: tpl.observation,
+        recommendation: tpl.recommendation
+      };
+    }
+
+    function copyArticleText() {
+      if (!latestArticlePayload) return;
+      const text = [
+        `[${latestArticlePayload.category}] - Mức độ: ${latestArticlePayload.severity} (${latestArticlePayload.score}/100)`,
+        latestArticlePayload.headline,
+        '',
+        latestArticlePayload.sapo,
+        '',
+        'Nhận định từ hình ảnh:',
+        latestArticlePayload.observation,
+        '',
+        'Khuyến nghị xử lý:',
+        latestArticlePayload.recommendation,
+        '',
+        `Địa điểm: ${latestArticlePayload.location} | Thời gian: ${latestArticlePayload.createdAt}`
+      ].join('\n');
+
+      navigator.clipboard?.writeText(text).then(() => {
+        showToast('Đã sao chép toàn bộ nội dung bản tin vào bộ nhớ tạm.');
+      }).catch(() => {
+        showToast('Không thể tự động sao chép trên trình duyệt này.', true);
+      });
+    }
+
+    function sendDraftToMainPage() {
+      if (!latestArticlePayload) return;
+      try {
+        localStorage.setItem('eco_ai_article_draft', JSON.stringify(latestArticlePayload));
+        showToast('Đã lưu bản nháp vào trình duyệt. Đang chuyển sang Trang chủ...');
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 450);
+      } catch (_) {
+        showToast('Không lưu được bản nháp trên trình duyệt.', true);
+      }
+    }
+
+    function showToast(msg, isError = false) {
+      const el = document.getElementById('actionToast');
+      el.textContent = msg;
+      el.className = isError
+        ? 'text-xs font-semibold text-rose-700 bg-rose-50 border border-rose-200 rounded-xl px-3.5 py-2'
+        : 'text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-3.5 py-2';
+      el.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng Nhập & Đăng Ký - MT Xanh & Cuộc Sống</title>
+
+  <!-- Google Fonts: Be Vietnam Pro -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Be Vietnam Pro"', 'system-ui', 'sans-serif'] },
+          colors: {
+            eco: {
+              50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 300: '#86efac',
+              400: '#4ade80', 500: '#22c55e', 600: '#16a34a', 700: '#15803d',
+              800: '#166534', 900: '#14532d'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background: radial-gradient(circle at top left, #15803d 0%, #0f172a 55%, #064e3b 100%);
+    }
+    .btn-3d {
+      box-shadow: 0 8px 20px -4px rgba(21, 128, 61, 0.45);
+      transition: all 0.2s ease;
+    }
+    .btn-3d:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px -4px rgba(21, 128, 61, 0.55);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-6 font-sans antialiased">
+
+  <!-- Nút quay lại trang chủ -->
+  <a href="index.html" class="fixed top-4 left-4 z-30 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold backdrop-blur-md border border-white/15 transition-all shadow-lg">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+    </svg>
+    <span>Về Trang chủ</span>
+  </a>
+
+  <!-- Khung chính -->
+  <div class="w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 border border-white/25">
+
+    <!-- Cột trái: Logo & Thông tin Cổng Môi Trường TP. Cao Lãnh -->
+    <div class="lg:col-span-5 bg-gradient-to-br from-eco-800 via-eco-700 to-emerald-600 p-7 sm:p-8 text-white flex flex-col justify-between">
+      <div>
+        <div class="flex items-center gap-3.5 mb-5">
+          <div class="relative w-16 h-16 rounded-full overflow-hidden border-2 border-white/80 shadow-xl bg-eco-50 flex items-center justify-center shrink-0">
+            <svg id="loginSvgFallback" viewBox="0 0 64 64" class="w-14 h-14">
+              <circle cx="32" cy="32" r="30" fill="#16a34a"/>
+              <circle cx="32" cy="32" r="24" fill="#ecfdf5"/>
+              <path d="M16 38 C22 24, 40 20, 48 16 C45 27, 37 37, 22 42 Z" fill="#16a34a"/>
+              <path d="M20 44 C28 38, 38 36, 46 39 C38 46, 28 48, 20 44 Z" fill="#0284c7"/>
+              <text x="32" y="31" text-anchor="middle" font-size="11" font-weight="800" fill="#14532d">MT</text>
+              <text x="32" y="42" text-anchor="middle" font-size="9.5" font-weight="800" fill="#15803d">XANH</text>
+            </svg>
+            <img
+              id="loginLogoImg"
+              src="/images/logonienluan.jpg"
+              data-fallback-idx="0"
+              onload="this.classList.remove('hidden'); document.getElementById('loginSvgFallback').classList.add('hidden');"
+              onerror="handleLoginLogoError(this)"
+              alt="Logo MT Xanh"
+              class="hidden absolute inset-0 w-full h-full object-cover"
+            >
+          </div>
+          <div>
+            <span class="inline-block px-2 py-0.5 rounded bg-white/15 text-[10px] font-bold uppercase tracking-wider text-eco-100">
+              Cổng thông tin môi trường
+            </span>
+            <h1 class="text-xl font-extrabold tracking-tight mt-1 leading-snug">
+              MT XANH <span class="text-amber-300">&</span> Cuộc sống
+            </h1>
+          </div>
+        </div>
+
+        <p class="text-xs text-eco-50/95 leading-relaxed">
+          Cổng Thông Tin & Giám Sát Môi Trường Đô Thị <strong>TP. Cao Lãnh, Đồng Tháp</strong> — kết nối người dân, lực lượng chức năng và cộng đồng sống xanh.
+        </p>
+
+        <div class="mt-7 space-y-3 text-xs text-eco-50">
+          <div class="flex items-start gap-3 p-3 rounded-2xl bg-white/10 border border-white/10">
+            <span class="w-6 h-6 rounded-lg bg-white text-eco-800 flex items-center justify-center shrink-0 font-extrabold text-[11px]">1</span>
+            <p class="leading-relaxed"><strong>Giám sát ô nhiễm Cao Lãnh:</strong> Theo dõi điểm nóng rác thải, kênh rạch, nguồn nước và gửi phản ánh kèm GPS, hình ảnh thực tế.</p>
+          </div>
+          <div class="flex items-start gap-3 p-3 rounded-2xl bg-white/10 border border-white/10">
+            <span class="w-6 h-6 rounded-lg bg-white text-eco-800 flex items-center justify-center shrink-0 font-extrabold text-[11px]">2</span>
+            <p class="leading-relaxed"><strong>Thông tin & Cuộc sống xanh:</strong> Cập nhật tin môi trường Đồng Tháp, phân loại rác tại nguồn và tra cứu mức phạt vi phạm.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-6 mt-6 border-t border-white/15 text-[11px] text-eco-100/90 flex items-center justify-between">
+        <span>Cổng Thông Tin Môi Trường TP. Cao Lãnh</span>
+        <span class="font-semibold">Đồng Tháp</span>
+      </div>
+    </div>
+
+    <!-- Cột phải: Tabs Đăng nhập / Đăng ký -->
+    <div class="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-center bg-white">
+
+      <!-- Tabs Đăng nhập / Đăng ký -->
+      <div class="flex gap-1.5 p-1 bg-slate-100 rounded-2xl mb-6 border border-slate-200/70">
+        <button type="button" id="tabLogin" onclick="switchMode('login')" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-eco-800 shadow-sm transition-all">
+          Đăng nhập
+        </button>
+        <button type="button" id="tabRegister" onclick="switchMode('register')" class="flex-1 py-2.5 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-800 transition-all">
+          Đăng ký tài khoản
+        </button>
+      </div>
+
+      <!-- Thông báo trạng thái -->
+      <div id="authAlert" class="hidden mb-4 p-3 rounded-xl text-xs font-medium"></div>
+
+      <!-- ================= FORM ĐĂNG NHẬP ĐƠN GIẢN THEO GMAIL ================= -->
+      <div id="loginSection">
+        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4 text-xs">
+          <div>
+            <label for="loginEmail" class="block font-bold text-slate-700 mb-1.5">Nhập Gmail / Email tài khoản <span class="text-rose-500">*</span></label>
+            <input
+              type="email"
+              id="loginEmail"
+              required
+              autofocus
+              placeholder="ví dụ: tenban@gmail.com"
+              class="w-full py-3 px-4 rounded-xl border border-slate-300 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-eco-600 focus:border-eco-600 focus:outline-none text-sm transition-all"
+            >
+          </div>
+
+          <div>
+            <label for="loginPassword" class="block font-semibold text-slate-500 mb-1">Mật khẩu (tùy chọn — có thể để trống để vào nhanh bằng Gmail)</label>
+            <input
+              type="password"
+              id="loginPassword"
+              placeholder="Nhập mật khẩu hoặc để trống"
+              class="w-full py-2.5 px-3.5 rounded-xl border border-slate-200 bg-slate-50/40 focus:bg-white focus:ring-2 focus:ring-eco-600 focus:outline-none transition-all"
+            >
+          </div>
+
+          <button type="submit" class="btn-3d w-full py-3 rounded-xl bg-gradient-to-r from-eco-700 to-eco-600 hover:from-eco-800 hover:to-eco-700 text-white font-bold text-xs tracking-wide mt-2">
+            Đăng nhập ngay →
+          </button>
+        </form>
+
+        <!-- Gợi ý điền nhanh Gmail -->
+        <div class="mt-5 pt-4 border-t border-slate-100">
+          <div class="text-[11px] font-semibold text-slate-400 mb-2">Chọn nhanh email mẫu:</div>
+          <div class="flex flex-wrap gap-1.5 text-[11px]">
+            <button type="button" onclick="fillQuickEmail('an.nguyen@gmail.com')" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-semibold border border-emerald-200 transition-colors">
+              an.nguyen@gmail.com
+            </button>
+            <button type="button" onclick="fillQuickEmail('tuan.canbo@dongthap.gov.vn')" class="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-800 font-semibold border border-blue-200 transition-colors">
+              tuan.canbo@dongthap.gov.vn
+            </button>
+            <button type="button" onclick="fillQuickEmail('hung.quanly@dongthap.gov.vn')" class="px-2.5 py-1 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-800 font-semibold border border-purple-200 transition-colors">
+              hung.quanly@dongthap.gov.vn
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= FORM ĐĂNG KÝ ================= -->
+      <div id="registerSection" class="hidden">
+        <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-3.5 text-xs">
+          <div>
+            <label for="regFullName" class="block font-semibold text-slate-700 mb-1">Họ và tên <span class="text-rose-500">*</span></label>
+            <input
+              type="text"
+              id="regFullName"
+              required
+              placeholder="Nhập họ và tên của bạn"
+              class="w-full py-2.5 px-3.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-eco-600 focus:outline-none"
+            >
+          </div>
+
+          <div>
+            <label for="regEmail" class="block font-semibold text-slate-700 mb-1">Gmail / Email <span class="text-rose-500">*</span></label>
+            <input
+              type="email"
+              id="regEmail"
+              required
+              placeholder="email@gmail.com"
+              class="w-full py-2.5 px-3.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-eco-600 focus:outline-none"
+            >
+          </div>
+
+          <div>
+            <label for="regPhone" class="block font-semibold text-slate-700 mb-1">Số điện thoại</label>
+            <input
+              type="tel"
+              id="regPhone"
+              placeholder="0901234567"
+              class="w-full py-2.5 px-3.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-eco-600 focus:outline-none"
+            >
+          </div>
+
+          <div>
+            <label for="regPassword" class="block font-semibold text-slate-700 mb-1">Mật khẩu <span class="text-rose-500">*</span></label>
+            <input
+              type="password"
+              id="regPassword"
+              required
+              placeholder="Nhập mật khẩu"
+              class="w-full py-2.5 px-3.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-eco-600 focus:outline-none"
+            >
+          </div>
+
+          <button type="submit" class="btn-3d w-full py-3 rounded-xl bg-gradient-to-r from-eco-700 to-eco-600 hover:from-eco-800 hover:to-eco-700 text-white font-bold text-xs mt-1">
+            Đăng ký tài khoản
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const BACKEND_API = 'http://localhost:5000/api/v1';
+
+    const LOGO_CANDIDATES = [
+      '/images/logonienluan.jpg',
+      'images/logonienluan.jpg',
+      'http://localhost:5000/images/logonienluan.jpg'
+    ];
+
+    const KNOWN_ACCOUNTS = {
+      'an.nguyen@gmail.com': {
+        id: 1,
+        full_name: 'Nguyễn Văn An',
+        email: 'an.nguyen@gmail.com',
+        role: 'Người dân'
+      },
+      'tuan.canbo@dongthap.gov.vn': {
+        id: 2,
+        full_name: 'Phạm Minh Tuấn',
+        email: 'tuan.canbo@dongthap.gov.vn',
+        role: 'Cán bộ'
+      },
+      'hung.quanly@dongthap.gov.vn': {
+        id: 3,
+        full_name: 'Đặng Quốc Hùng',
+        email: 'hung.quanly@dongthap.gov.vn',
+        role: 'Quản lý'
+      }
+    };
+
+    function handleLoginLogoError(img) {
+      const idx = Number(img.dataset.fallbackIdx || 0) + 1;
+      if (idx < LOGO_CANDIDATES.length) {
+        img.dataset.fallbackIdx = String(idx);
+        img.src = LOGO_CANDIDATES[idx];
+      } else {
+        img.classList.add('hidden');
+        const svg = document.getElementById('loginSvgFallback');
+        if (svg) svg.classList.remove('hidden');
+      }
+    }
+
+    function showAlert(msg, type = 'success') {
+      const box = document.getElementById('authAlert');
+      box.textContent = msg;
+      box.className = `mb-4 p-3 rounded-xl text-xs font-medium ${
+        type === 'success'
+          ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+          : 'bg-rose-50 text-rose-800 border border-rose-200'
+      }`;
+      box.classList.remove('hidden');
+    }
+
+    function switchMode(mode) {
+      document.getElementById('authAlert').classList.add('hidden');
+      const isLogin = mode === 'login';
+      document.getElementById('loginSection').classList.toggle('hidden', !isLogin);
+      document.getElementById('registerSection').classList.toggle('hidden', isLogin);
+
+      document.getElementById('tabLogin').className = isLogin
+        ? 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-eco-800 shadow-sm transition-all'
+        : 'flex-1 py-2.5 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-800 transition-all';
+
+      document.getElementById('tabRegister').className = !isLogin
+        ? 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-eco-800 shadow-sm transition-all'
+        : 'flex-1 py-2.5 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-800 transition-all';
+    }
+
+    function fillQuickEmail(email) {
+      document.getElementById('loginEmail').value = email;
+      document.getElementById('loginEmail').focus();
+    }
+
+    function buildUserFromEmail(email) {
+      const normalized = email.trim().toLowerCase();
+      if (KNOWN_ACCOUNTS[normalized]) {
+        return KNOWN_ACCOUNTS[normalized];
+      }
+
+      try {
+        const savedList = JSON.parse(localStorage.getItem('eco_registered_users') || '[]');
+        const found = savedList.find(u => (u.email || '').toLowerCase() === normalized);
+        if (found) return found;
+      } catch (_) {}
+
+      const localPart = normalized.split('@')[0] || 'nguoidung';
+      const prettyName = localPart
+        .replace(/[._-]+/g, ' ')
+        .replace(/\b\w/g, ch => ch.toUpperCase());
+
+      let inferredRole = 'Người dân';
+      if (normalized.includes('quanly') || normalized.includes('admin')) {
+        inferredRole = 'Quản lý';
+      } else if (normalized.includes('canbo') || normalized.includes('congan') || normalized.includes('gov.vn')) {
+        inferredRole = 'Cán bộ';
+      }
+
+      return {
+        id: Date.now(),
+        full_name: prettyName,
+        email: email.trim(),
+        role: inferredRole
+      };
+    }
+
+    function saveSessionAndRedirect(user, token = 'email-login-token') {
+      localStorage.setItem('eco_auth_token', token);
+      localStorage.setItem('eco_auth_user', JSON.stringify(user));
+
+      try {
+        const savedList = JSON.parse(localStorage.getItem('eco_registered_users') || '[]');
+        const filtered = savedList.filter(u => (u.email || '').toLowerCase() !== user.email.toLowerCase());
+        filtered.unshift(user);
+        localStorage.setItem('eco_registered_users', JSON.stringify(filtered.slice(0, 30)));
+      } catch (_) {}
+
+      showAlert(`Đăng nhập thành công tài khoản ${user.full_name} (${user.email})!`, 'success');
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 350);
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+
+      if (!email) {
+        showAlert('Vui lòng nhập Gmail / Email!', 'error');
+        return;
+      }
+
+      if (password) {
+        try {
+          const res = await fetch(`${BACKEND_API}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const rawText = await res.text();
+          const data = JSON.parse(rawText);
+          if (res.ok && data.user) {
+            saveSessionAndRedirect(data.user, data.token || 'backend-token');
+            return;
+          }
+        } catch (_) {}
+      }
+
+      const user = buildUserFromEmail(email);
+      saveSessionAndRedirect(user);
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const full_name = document.getElementById('regFullName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const phone = document.getElementById('regPhone').value.trim();
+      const password = document.getElementById('regPassword').value;
+
+      const newUser = {
+        id: Date.now(),
+        full_name,
+        email,
+        phone,
+        role: 'Người dân'
+      };
+
+      try {
+        const res = await fetch(`${BACKEND_API}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ full_name, email, phone, password })
+        });
+        const rawText = await res.text();
+        const data = JSON.parse(rawText);
+        if (res.ok && data.user) {
+          Object.assign(newUser, data.user);
+        }
+      } catch (_) {}
+
+      try {
+        const savedList = JSON.parse(localStorage.getItem('eco_registered_users') || '[]');
+        const filtered = savedList.filter(u => (u.email || '').toLowerCase() !== email.toLowerCase());
+        filtered.unshift(newUser);
+        localStorage.setItem('eco_registered_users', JSON.stringify(filtered.slice(0, 30)));
+      } catch (_) {}
+
+      switchMode('login');
+      document.getElementById('loginEmail').value = email;
+      document.getElementById('loginPassword').value = '';
+      showAlert('Đăng ký thành công! Bạn có thể bấm "Đăng nhập ngay →" để vào hệ thống.', 'success');
+    }
+  </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 /**
- * Chart Controller (Chart.js)
- * Trực quan hóa dữ liệu thống kê môi trường đô thị
+ * Bộ điều khiển Biểu đồ Thống kê (chart.js)
+ * Trực quan hóa dữ liệu môi trường đô thị từ SQL Server
  */
 
 class ChartController {
@@ -13,15 +13,15 @@ class ChartController {
     if (!window.Chart || !stats) return;
 
     this.renderTypeChart(stats.byType || []);
-    this.renderStatusChart(stats.overview || {});
+    this.renderStatusChart(stats);
   }
 
   renderTypeChart(byType) {
     const canvas = document.getElementById('chartPollutionTypes');
     if (!canvas) return;
 
-    const labels = byType.map(t => t.type_name);
-    const data = byType.map(t => t.count);
+    const labels = byType.map(t => t.name || t.type_name || 'Khác');
+    const data = byType.map(t => Number(t.count) || 0);
 
     if (this.typeChart) {
       this.typeChart.destroy();
@@ -74,9 +74,24 @@ class ChartController {
     });
   }
 
-  renderStatusChart(overview) {
+  renderStatusChart(stats) {
     const canvas = document.getElementById('chartStatusProgress');
     if (!canvas) return;
+
+    // Tính số lượng theo trạng thái tiếng Việt từ mảng byStatus của Backend
+    const byStatus = stats.byStatus || [];
+    let pending = 0;
+    let processing = 0;
+    let completed = 0;
+    let rejected = 0;
+
+    byStatus.forEach(item => {
+      const count = Number(item.count) || 0;
+      if (item.status === 'Chờ tiếp nhận') pending += count;
+      else if (['Đã tiếp nhận', 'Đã xác minh', 'Đang xử lý'].includes(item.status)) processing += count;
+      else if (item.status === 'Hoàn thành') completed += count;
+      else if (item.status === 'Từ chối') rejected += count;
+    });
 
     if (this.statusChart) {
       this.statusChart.destroy();
@@ -86,20 +101,15 @@ class ChartController {
     this.statusChart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['Chờ duyệt', 'Đang xử lý', 'Hoàn tất', 'Từ chối'],
+        labels: ['Chờ tiếp nhận', 'Đang xử lý', 'Hoàn thành', 'Từ chối'],
         datasets: [{
           label: 'Số lượng phản ánh',
-          data: [
-            overview.pending || 0,
-            overview.processing || 0,
-            overview.completed || 0,
-            overview.rejected || 0
-          ],
+          data: [pending, processing, completed, rejected],
           backgroundColor: [
-            '#f59e0b', // Vàng cam - PENDING
-            '#3b82f6', // Xanh dương - PROCESSING
-            '#10b981', // Xanh ngọc - COMPLETED
-            '#ef4444'  // Đỏ - REJECTED
+            '#f59e0b', // Vàng cam - Chờ tiếp nhận
+            '#3b82f6', // Xanh dương - Đang xử lý
+            '#10b981', // Xanh ngọc - Hoàn thành
+            '#ef4444'  // Đỏ - Từ chối
           ],
           borderRadius: 8,
           borderSkipped: false
@@ -133,4 +143,3 @@ class ChartController {
 }
 
 window.chartController = new ChartController();
-

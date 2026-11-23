@@ -3,14 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EcoAlert - Hệ Thống Giám Sát & Báo Cáo Ô Nhiễm Môi Trường Đô Thị</title>
-  
-  <!-- Google Fonts: Be Vietnam Pro -->
+  <title>MT Xanh & Cuộc Sống - Cổng Thông Tin & Giám Sát Môi Trường Đô Thị TP. Cao Lãnh</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  
-  <!-- Tailwind CSS CDN -->
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -38,296 +36,825 @@
     }
   </script>
 
-  <!-- Leaflet CSS & JS for Interactive Map -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
-  <!-- Chart.js for Statistics -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
-</head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
 
-  <!-- TOP CIVIC BANNER & DEMO ROLE SWITCHER -->
-  <header class="bg-eco-900 text-white text-xs border-b border-eco-800 no-print">
-    <div class="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-3">
-      <!-- Civic branding badge -->
-      <div class="flex items-center gap-2">
-        <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-eco-700 text-[10px] font-bold">VN</span>
-        <span class="font-medium text-eco-100">Cổng Dịch Vụ Tiếp Nhận & Giám Sát Môi Trường Đô Thị</span>
-        <span class="text-eco-400 hidden sm:inline">•</span>
-        <span class="text-eco-300 hidden sm:inline">Khu vực thử nghiệm: TP. Cao Lãnh, Tỉnh Đồng Tháp</span>
+  <style>
+    body {
+      background: #f5f7f6;
+      color: #0f172a;
+    }
+    .card-elevated {
+      background: #ffffff;
+      box-shadow: 0 6px 20px -5px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .card-elevated:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 26px -6px rgba(21, 128, 61, 0.14);
+      border-color: #86efac;
+    }
+    .news-card:hover .news-img {
+      transform: scale(1.04);
+    }
+    .news-img {
+      transition: transform 0.35s ease;
+    }
+    .btn-3d {
+      box-shadow: 0 4px 12px rgba(21, 128, 61, 0.28);
+      transition: all 0.18s ease;
+    }
+    .btn-3d:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(21, 128, 61, 0.36);
+    }
+    .modal-pop {
+      animation: modalFadeIn 0.2s ease-out;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.97) translateY(6px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .role-police-banner {
+      background: linear-gradient(90deg, #0f172a 0%, #1e3a8a 55%, #0f172a 100%);
+    }
+    .role-admin-banner {
+      background: linear-gradient(90deg, #14532d 0%, #15803d 55%, #14532d 100%);
+    }
+    .mag-dd-wrap:hover .mag-dd-panel,
+    .mag-dd-wrap.dd-open .mag-dd-panel {
+      display: block !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans antialiased">
+
+  <!-- ========================================================================= -->
+  <!-- 1. MASTHEAD PHONG CÁCH TẠP CHÍ MÔI TRƯỜNG & CUỘC SỐNG                     -->
+  <!-- ========================================================================= -->
+  <header id="topRoleBanner" class="bg-white border-b border-slate-200 no-print">
+    <div class="bg-slate-900 text-slate-200 text-[11px]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-1.5 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="px-2 py-0.5 rounded bg-eco-600 text-white text-[10px] font-extrabold uppercase tracking-wider shrink-0">MT XANH</span>
+          <span id="topBannerText" class="truncate text-slate-200">
+            Cổng Thông Tin & Giám Sát Môi Trường Đô Thị TP. Cao Lãnh
+          </span>
+        </div>
+
+        <div class="flex items-center gap-4 shrink-0">
+          <span class="hidden sm:inline">Đường dây nóng TNMT: <strong class="text-white">0277.3851.999</strong></span>
+          <span class="hidden lg:inline">•</span>
+          <span class="hidden lg:inline">Cảnh sát Môi trường: <strong class="text-white">113 / 0277.3851.113</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+      <div class="hidden xl:flex flex-col text-[11px] text-slate-500 space-y-0.5 shrink-0">
+        <span>Đường dây nóng: <strong class="text-slate-700">0277.3851.999</strong></span>
+        <span>Tiếp nhận phản ánh 24/7: <strong class="text-slate-700">0277.3851.113</strong></span>
+        <span>Email: <strong class="text-eco-700">mtxanh.caolanh@dongthap.gov.vn</strong></span>
       </div>
 
-      <!-- Quick Role Presets (Cực kỳ tiện dụng khi chấm bài / kiểm thử) -->
-      <div class="flex items-center gap-1.5 flex-wrap">
-        <span class="text-eco-200 text-[11px] mr-1 hidden md:inline">Đổi vai trò nhanh:</span>
-        <button type="button" onclick="window.app.quickLoginAs('CITIZEN')" class="role-preset-btn px-2.5 py-1 rounded bg-eco-800/80 hover:bg-eco-700 text-white text-[11px] transition-colors border border-eco-700/60" data-role="CITIZEN">
-          🧑 Người dân (An)
+      <div class="flex items-center gap-3.5 cursor-pointer" onclick="switchPortalTab('home')">
+        <div class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-eco-600 shadow-md bg-eco-50 flex items-center justify-center shrink-0">
+          <svg id="svgFallbackLogo" viewBox="0 0 64 64" class="w-13 h-13">
+            <circle cx="32" cy="32" r="30" fill="#16a34a"/>
+            <circle cx="32" cy="32" r="24" fill="#ecfdf5"/>
+            <path d="M16 38 C22 24, 40 20, 48 16 C45 27, 37 37, 22 42 Z" fill="#16a34a"/>
+            <path d="M20 44 C28 38, 38 36, 46 39 C38 46, 28 48, 20 44 Z" fill="#0284c7"/>
+            <text x="32" y="31" text-anchor="middle" font-size="11" font-weight="800" fill="#14532d">MT</text>
+            <text x="32" y="42" text-anchor="middle" font-size="9.5" font-weight="800" fill="#15803d">XANH</text>
+          </svg>
+          <img
+            id="brandLogoImg"
+            src="/images/logonienluan.jpg"
+            data-fallback-idx="0"
+            onload="this.classList.remove('hidden'); document.getElementById('svgFallbackLogo').classList.add('hidden');"
+            onerror="handleLogoError(this)"
+            alt="Logo MT Xanh"
+            class="hidden absolute inset-0 w-full h-full object-cover"
+          >
+        </div>
+
+        <div class="leading-tight">
+          <div class="text-[11px] font-bold uppercase tracking-widest text-eco-700">Cổng thông tin điện tử</div>
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl sm:text-[28px] font-extrabold tracking-tight text-eco-700 whitespace-nowrap">
+              MT XANH <span class="text-amber-500">&</span> <span class="text-rose-600">Cuộc sống</span>
+            </span>
+            <span id="currentRoleBadge" class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wide bg-emerald-100 text-emerald-800 border border-emerald-200 whitespace-nowrap">
+              NGƯỜI DÂN
+            </span>
+          </div>
+          <div id="brandSubtitle" class="inline-block mt-0.5 px-2 py-0.5 rounded bg-eco-700 text-white text-[10px] font-bold tracking-wider uppercase">
+            Giám sát Môi trường Đô thị & Cộng đồng TP. Cao Lãnh
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2.5 shrink-0 ml-auto xl:ml-0">
+        <button onclick="window.app.openCreateModal()" class="btn-3d bg-gradient-to-r from-eco-700 to-eco-600 hover:from-eco-800 hover:to-eco-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-1.5 whitespace-nowrap">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          <span>Gửi phản ánh</span>
         </button>
-        <button type="button" onclick="window.app.quickLoginAs('OFFICER')" class="role-preset-btn px-2.5 py-1 rounded bg-eco-800/80 hover:bg-eco-700 text-white text-[11px] transition-colors border border-eco-700/60" data-role="OFFICER">
-          👮 Cán bộ (Tuấn)
-        </button>
-        <button type="button" onclick="window.app.quickLoginAs('MANAGER')" class="role-preset-btn px-2.5 py-1 rounded bg-eco-800/80 hover:bg-eco-700 text-white text-[11px] transition-colors border border-eco-700/60" data-role="MANAGER">
-          🎖️ Quản lý (Hùng)
-        </button>
+
+        <div id="userNavContainer" class="hidden flex items-center gap-2 pl-2.5 border-l border-slate-200">
+          <div class="text-right leading-tight">
+            <div id="userNavName" class="text-xs font-bold text-slate-800 whitespace-nowrap">Người dùng</div>
+            <div id="userNavRole" class="text-[10px] text-eco-700 font-semibold whitespace-nowrap">Vai trò</div>
+          </div>
+          <button onclick="window.app.logout()" title="Đăng xuất" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+            </svg>
+          </button>
+        </div>
+
+        <div id="guestNavContainer">
+          <a href="login.html" class="inline-flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-bold text-eco-800 hover:text-white bg-eco-50 hover:bg-eco-700 border border-eco-200 rounded-xl transition-all whitespace-nowrap">
+            <span>Đăng nhập</span>
+          </a>
+        </div>
       </div>
     </div>
   </header>
 
-  <!-- MAIN NAVIGATION BAR -->
-  <nav class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm no-print">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6">
-      <div class="flex items-center justify-between h-16 gap-4">
-        
-        <!-- Logo & Title -->
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-eco-700 to-eco-500 flex items-center justify-center text-white shadow-md shadow-eco-700/20">
-            <!-- Leaf SVG Icon -->
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
-            </svg>
-          </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="text-xl font-extrabold tracking-tight text-eco-800">EcoAlert</span>
-              <span id="currentRoleBadge" class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-100 text-slate-600">KHÁCH</span>
+  <!-- ========================================================================= -->
+  <!-- 2. THANH CHUYÊN MỤC XANH LÁ                                               -->
+  <!-- ========================================================================= -->
+  <nav class="bg-eco-700 text-white sticky top-0 z-40 shadow-md no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-wrap items-center justify-between min-h-[44px] py-1 gap-2">
+      <div class="flex flex-wrap items-center gap-1">
+        <button type="button" data-nav-key="home" onclick="switchPortalTab('home')" class="nav-item-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-eco-900 text-white transition-all whitespace-nowrap flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <span>Trang chủ</span>
+        </button>
+
+        <div class="relative mag-dd-wrap">
+          <button type="button" onclick="toggleMagDropdown(event, this)" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-eco-50 hover:bg-eco-600 transition-all whitespace-nowrap inline-flex items-center">
+            <span>Nước & Cuộc sống</span>
+            <span class="ml-1 text-[10px] opacity-85">▾</span>
+          </button>
+          <div class="mag-dd-panel hidden absolute left-0 top-full pt-1 z-50 min-w-[270px]">
+            <div class="bg-eco-700 border border-eco-500/40 rounded-b-xl shadow-2xl py-1.5 text-xs">
+              <a href="chuyen-muc.html#cat=topic-water&sub=nuoc-doi-song" class="flex items-center justify-between px-4 py-2.5 text-eco-50 hover:bg-eco-600 hover:text-white transition-colors">
+                <span>Nước & Đời sống (Cao Lãnh / Đồng Tháp)</span>
+                <span>›</span>
+              </a>
+              <a href="chuyen-muc.html#cat=topic-water&sub=tai-nguyen-nuoc" class="flex items-center justify-between px-4 py-2.5 text-eco-50 hover:bg-eco-600 hover:text-white transition-colors">
+                <span>Tài nguyên & Nguồn nước</span>
+                <span>›</span>
+              </a>
             </div>
-            <p class="text-[11px] text-slate-500 font-medium">Bảo vệ Môi trường & Ứng phó Đô thị</p>
           </div>
         </div>
 
-        <!-- Navigation Tabs -->
-        <div class="hidden md:flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200/60">
-          <button data-tab="map" class="nav-tab-active px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-eco-700 transition-all flex items-center gap-1.5">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
-            <span>Bản đồ số</span>
+        <div class="relative mag-dd-wrap">
+          <button type="button" onclick="toggleMagDropdown(event, this)" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-eco-50 hover:bg-eco-600 transition-all whitespace-nowrap inline-flex items-center">
+            <span>Môi trường - Tài nguyên</span>
+            <span class="ml-1 text-[10px] opacity-85">▾</span>
           </button>
-          <button data-tab="list" class="px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-eco-700 transition-all flex items-center gap-1.5">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
-            <span>Danh sách phản ánh</span>
-          </button>
-          <button data-tab="stats" class="px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-eco-700 transition-all flex items-center gap-1.5">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-            <span>Thống kê & Báo cáo</span>
-          </button>
-          <button data-tab="about" class="px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-eco-700 transition-all flex items-center gap-1.5">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <span>Quy trình xử lý</span>
-          </button>
-        </div>
-
-        <!-- Action Buttons: Gửi phản ánh & User Profile -->
-        <div class="flex items-center gap-2.5">
-          <!-- Create Report Button -->
-          <button onclick="window.app.openCreateModal()" class="bg-eco-700 hover:bg-eco-800 active:bg-eco-900 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-sm hover:shadow transition-all flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-            <span class="hidden sm:inline">Gửi phản ánh mới</span>
-            <span class="sm:hidden">Báo cáo</span>
-          </button>
-
-          <!-- User session logged in -->
-          <div id="userNavContainer" class="hidden flex items-center gap-2 pl-2 border-l border-slate-200">
-            <div class="text-right hidden sm:block">
-              <div id="userNavName" class="text-xs font-bold text-slate-800">Người dùng</div>
-              <div id="userNavRole" class="text-[10px] text-eco-700 font-medium">Vai trò</div>
+          <div class="mag-dd-panel hidden absolute left-0 top-full pt-1 z-50 min-w-[270px]">
+            <div class="bg-eco-700 border border-eco-500/40 rounded-b-xl shadow-2xl py-1.5 text-xs">
+              <a href="chuyen-muc.html#cat=topic-resource&sub=xu-ly-rac-cao-lanh" class="flex items-center justify-between px-4 py-2.5 text-eco-50 hover:bg-eco-600 hover:text-white transition-colors">
+                <span>Quản lý chất thải & Xử lý ô nhiễm</span>
+                <span>›</span>
+              </a>
+              <a href="chuyen-muc.html#cat=topic-resource&sub=giam-sat-xu-phat" class="flex items-center justify-between px-4 py-2.5 text-eco-50 hover:bg-eco-600 hover:text-white transition-colors">
+                <span>Giám sát & Xử phạt vi phạm</span>
+                <span>›</span>
+              </a>
             </div>
-            <button onclick="window.app.logout()" title="Đăng xuất" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-            </button>
-          </div>
-
-          <!-- Guest login button -->
-          <div id="guestNavContainer">
-            <button onclick="window.app.openAuthModal('login')" class="px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-eco-800 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">
-              Đăng nhập
-            </button>
           </div>
         </div>
 
+        <div class="relative mag-dd-wrap">
+          <button type="button" onclick="toggleMagDropdown(event, this)" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-eco-50 hover:bg-eco-600 transition-all whitespace-nowrap inline-flex items-center">
+            <span>Cuộc sống xanh</span>
+            <span class="ml-1 text-[10px] opacity-85">▾</span>
+          </button>
+          <div class="mag-dd-panel hidden absolute left-0 top-full pt-1 z-50 min-w-[270px]">
+            <div class="bg-eco-700 border border-eco-500/40 rounded-b-xl shadow-2xl py-1.5 text-xs">
+              <a href="chuyen-muc.html#cat=topic-green&sub=phan-loai-tai-che" class="flex items-center justify-between px-4 py-2.5 text-eco-50 hover:bg-eco-600 hover:text-white transition-colors">
+                <span>Đổi phế liệu & Phân loại rác tại nguồn</span>
+                <span>›</span>
+              </a>
+              <a href="chuyen-muc.html#cat=topic-green&sub=giam-nhua-song-xanh" class="flex items-center justify-between px-4 py-2.5 text-eco-50 hover:bg-eco-600 hover:text-white transition-colors">
+                <span>Giảm nhựa dùng một lần & Sống xanh</span>
+                <span>›</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" data-nav-key="ai" onclick="switchPortalTab('ai')" class="nav-item-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-400/20 text-amber-100 hover:bg-eco-600 transition-all whitespace-nowrap flex items-center gap-1">
+          <span>✨ AI Phân tích ảnh</span>
+        </button>
+
+        <button type="button" data-nav-key="law" onclick="switchPortalTab('law')" class="nav-item-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-eco-50 hover:bg-eco-600 transition-all whitespace-nowrap">
+          Pháp luật & Mức phạt
+        </button>
+
+        <button type="button" data-nav-key="video" onclick="scrollToVideoSection()" class="nav-item-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-eco-50 hover:bg-eco-600 transition-all whitespace-nowrap">
+          Video
+        </button>
+
+        <button type="button" data-nav-key="map" onclick="switchPortalTab('map')" class="nav-item-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-eco-50 hover:bg-eco-600 transition-all whitespace-nowrap flex items-center gap-1">
+          <span>📍 Bản đồ ô nhiễm</span>
+        </button>
+
+        <button type="button" id="navTabList" data-nav-key="list" onclick="switchPortalTab('list')" class="hidden nav-item-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-400/20 text-amber-200 hover:bg-eco-600 transition-all whitespace-nowrap">
+          📋 Sổ bộ phản ánh
+        </button>
+
+        <button type="button" id="navTabStats" data-nav-key="stats" onclick="switchPortalTab('stats')" class="hidden nav-item-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-400/25 text-purple-100 hover:bg-eco-600 transition-all whitespace-nowrap">
+          📊 Thống kê & Báo cáo
+        </button>
+      </div>
+
+      <div id="backendStatusBadge" class="hidden xl:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-eco-800/90 text-[11px] text-eco-100 shrink-0">
+        <span class="flex h-2 w-2 rounded-full bg-emerald-400"></span>
+        <span>Đang kết nối...</span>
       </div>
     </div>
   </nav>
 
-  <!-- QUICK STATS & BACKEND STATUS STRIP -->
-  <section class="bg-white border-b border-slate-200/80 py-3 no-print">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-wrap items-center justify-between gap-4">
-      
-      <!-- Metrics Pills -->
-      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 w-full lg:w-auto">
-        <div class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200/60">
-          <div class="w-2.5 h-2.5 rounded-full bg-slate-600"></div>
-          <div>
-            <div class="text-[10px] text-slate-500 uppercase font-medium">Tổng số</div>
-            <div id="statTotal" class="text-sm font-bold text-slate-800">25</div>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg bg-amber-50/70 border border-amber-200/60">
-          <div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
-          <div>
-            <div class="text-[10px] text-amber-700 uppercase font-medium">Chờ duyệt</div>
-            <div id="statPending" class="text-sm font-bold text-amber-800">6</div>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg bg-blue-50/70 border border-blue-200/60">
-          <div class="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
-          <div>
-            <div class="text-[10px] text-blue-700 uppercase font-medium">Đang xử lý</div>
-            <div id="statProcessing" class="text-sm font-bold text-blue-800">8</div>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg bg-eco-50 border border-eco-200/60">
-          <div class="w-2.5 h-2.5 rounded-full bg-eco-600"></div>
-          <div>
-            <div class="text-[10px] text-eco-700 uppercase font-medium">Đã xong</div>
-            <div id="statCompleted" class="text-sm font-bold text-eco-800">11</div>
-          </div>
-        </div>
-
-        <div class="col-span-2 sm:col-span-1 flex items-center gap-2.5 px-3 py-1.5 rounded-lg bg-purple-50/70 border border-purple-200/60">
-          <div class="w-2.5 h-2.5 rounded-full bg-purple-500"></div>
-          <div>
-            <div class="text-[10px] text-purple-700 uppercase font-medium">Thời gian TB</div>
-            <div id="statAvgTime" class="text-sm font-bold text-purple-800">28.5h</div>
-          </div>
-        </div>
+  <!-- THANH XU HƯỚNG & NGÀY THÁNG -->
+  <div class="bg-white border-b border-slate-200 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <span class="inline-flex items-center gap-1 text-rose-600 font-extrabold uppercase tracking-wider text-[11px] shrink-0">
+          📈 Xu hướng
+        </span>
+        <span id="trendingHeadlineText" class="text-slate-600 truncate">
+          Phân loại rác thải tại nguồn & Giám sát nguồn nước đô thị TP. Cao Lãnh
+        </span>
       </div>
 
-      <!-- Backend Connection State Indicator -->
-      <div id="backendStatusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-xs text-slate-600">
-        <span class="flex h-2 w-2 rounded-full bg-slate-400"></span>
-        <span>Đang kiểm tra backend...</span>
+      <div class="flex items-center gap-3 shrink-0">
+        <span id="liveDateText" class="text-slate-500 font-medium">Thứ hai, 23/11/2026</span>
       </div>
-
     </div>
-  </section>
+  </div>
 
-  <!-- MAIN VIEWPORT -->
+  <!-- KHUNG ĐIỀU PHỐI NHANH CHO CÔNG AN / CÁN BỘ / ADMIN -->
+  <div id="staffQuickCommandBar" class="hidden max-w-7xl w-full mx-auto px-4 sm:px-6 pt-4 no-print">
+    <div id="staffCommandCard" class="rounded-2xl p-4 text-white shadow-md flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center font-extrabold text-sm shrink-0">
+          🛡️
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span id="staffCommandTitle" class="font-extrabold text-sm">Bảng điều hành Cán bộ / Công an</span>
+            <span id="staffCommandUrgentCount" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-500 text-white">
+              0 khẩn cấp / chờ xử lý
+            </span>
+          </div>
+          <p id="staffCommandDesc" class="text-xs text-white/85 mt-0.5">
+            Chế độ nghiệp vụ: lọc nhanh hồ sơ cần xác minh, cập nhật biên bản xử lý và đính kèm ảnh nghiệm thu.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="quickFilterForStaff('Khẩn cấp')" class="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow">
+          🚨 Hồ sơ khẩn cấp
+        </button>
+        <button onclick="quickFilterForStaff('Chờ tiếp nhận')" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold shadow">
+          📥 Chờ tiếp nhận
+        </button>
+
+        <span id="adminMediaControls" class="hidden flex items-center gap-2">
+          <button onclick="openAdminMediaModal('article')" class="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 text-xs font-bold shadow">
+            📰 Đăng bài báo mới
+          </button>
+          <button onclick="openAdminMediaModal('video')" class="px-3 py-1.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold shadow">
+            ▶ Thêm video YouTube
+          </button>
+        </span>
+
+        <button id="staffBtnOpenList" onclick="switchPortalTab('list')" class="px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-semibold border border-white/20">
+          📋 Mở sổ bộ phản ánh
+        </button>
+        <button id="staffBtnOpenStats" onclick="switchPortalTab('stats')" class="hidden px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow">
+          📊 Xem báo cáo thống kê
+        </button>
+      </div>
+    </div>
+  </div>
+
   <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6">
 
     <!-- ========================================================================= -->
-    <!-- TAB 1: BẢN ĐỒ SỐ & DANH SÁCH TƯƠNG TÁC (DEFAULT VIEW)                     -->
+    <!-- TAB 0: TRANG CHỦ TẠP CHÍ MÔI TRƯỜNG                                      -->
     <!-- ========================================================================= -->
-    <div id="view-map" class="view-tab-content">
-      
-      <!-- Filter Toolbar -->
-      <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm mb-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
-          
-          <!-- Search box -->
-          <div class="lg:col-span-2 relative">
-            <input type="text" id="searchInput" placeholder="Tìm theo tiêu đề, tuyến đường, địa chỉ..." 
-              class="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-eco-600 focus:border-transparent transition-all">
-            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-          </div>
+    <div id="view-home" class="view-tab-content space-y-8">
 
-          <!-- Status filter -->
-          <div>
-            <select id="filterStatus" class="w-full py-2 px-3 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-eco-600 bg-white">
-              <option value="">Tất cả trạng thái</option>
-              <option value="PENDING">Chờ tiếp nhận (Pending)</option>
-              <option value="ACCEPTED">Đã tiếp nhận (Accepted)</option>
-              <option value="VERIFIED">Đã xác minh (Verified)</option>
-              <option value="PROCESSING">Đang xử lý (Processing)</option>
-              <option value="COMPLETED">Đã giải quyết xong (Completed)</option>
-              <option value="REJECTED">Từ chối (Rejected)</option>
-            </select>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        <div id="leftColumnNewsList" class="lg:col-span-3 space-y-4">
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 text-xs text-slate-400">
+            Đang tải tin chuyên mục...
           </div>
+        </div>
 
-          <!-- Pollution type filter -->
-          <div>
-            <select id="filterType" class="w-full py-2 px-3 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-eco-600 bg-white">
-              <option value="">Tất cả loại ô nhiễm</option>
-              <!-- JS Populated -->
-            </select>
+        <article id="heroRealNewsCard" class="news-card cursor-pointer lg:col-span-6 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between group">
+          <div class="h-80 bg-slate-100 flex items-center justify-center text-xs text-slate-400">
+            Đang tải bài tiêu điểm môi trường...
           </div>
+        </article>
 
-          <!-- Severity filter & Reset button -->
-          <div class="flex items-center gap-1.5">
-            <select id="filterSeverity" class="w-full py-2 px-3 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-eco-600 bg-white">
-              <option value="">Mọi mức độ</option>
-              <option value="LOW">Mức độ Thấp</option>
-              <option value="MEDIUM">Mức độ Vừa</option>
-              <option value="HIGH">Nghiêm trọng</option>
-              <option value="CRITICAL">Khẩn cấp</option>
-            </select>
-            <button onclick="window.app.resetFilters()" title="Đặt lại bộ lọc" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors shrink-0">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        <div class="lg:col-span-3 space-y-4">
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-eco-800">Tin mới cập nhật</span>
+              <span id="newsUpdatedBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-eco-50 text-eco-700 font-semibold">RSS</span>
+            </div>
+            <div id="sideQuickNewsList" class="space-y-3 divide-y divide-slate-100">
+              <p class="text-xs text-slate-400">Đang tải danh sách tin...</p>
+            </div>
+            <button onclick="loadRealNewsFromBackend(true)" class="mt-3 w-full py-2 rounded-xl bg-slate-100 hover:bg-eco-50 text-slate-700 hover:text-eco-800 text-xs font-bold transition-colors">
+              ↻ Làm mới tin báo chí
             </button>
           </div>
 
+          <div class="card-elevated p-4 rounded-2xl border border-slate-200">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-eco-700">Quan trắc Cao Lãnh</span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">AQI 42 • Tốt</span>
+            </div>
+            <div class="grid grid-cols-3 gap-1.5 text-center my-2">
+              <div class="p-1.5 rounded-lg bg-slate-50 border border-slate-200/80">
+                <div class="text-[9px] text-slate-400">PM2.5</div>
+                <div class="text-[11px] font-extrabold text-emerald-700">14.8</div>
+              </div>
+              <div class="p-1.5 rounded-lg bg-slate-50 border border-slate-200/80">
+                <div class="text-[9px] text-slate-400">Độ ồn</div>
+                <div class="text-[11px] font-extrabold text-amber-600">58 dBA</div>
+              </div>
+              <div class="p-1.5 rounded-lg bg-slate-50 border border-slate-200/80">
+                <div class="text-[9px] text-slate-400">Sông Tiền</div>
+                <div class="text-[11px] font-extrabold text-blue-700">pH 7.2</div>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5 mt-1">
+              <button onclick="switchPortalTab('ai')" class="py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-[11px] font-extrabold transition-colors">
+                ✨ AI soi ảnh
+              </button>
+              <button onclick="window.app.openCreateModal()" class="py-2 rounded-xl bg-eco-700 hover:bg-eco-800 text-white text-[11px] font-bold transition-colors">
+                + Gửi phản ánh
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Map & List Split Layout -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
-        
-        <!-- Left: Reports Stream List (5 cols on lg) -->
-        <div class="lg:col-span-5 flex flex-col max-h-[720px] bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div class="p-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50/60">
-            <div class="flex items-center gap-2">
-              <h3 class="font-bold text-xs uppercase tracking-wider text-slate-700">Điểm nóng môi trường</h3>
-              <span id="reportsCountBadge" class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-eco-100 text-eco-800">
-                0 phản ánh
-              </span>
+      <section id="newsFeedSection" class="space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b-2 border-eco-700 pb-2.5">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2.5 h-6 rounded-sm bg-eco-700 inline-block"></span>
+            <div>
+              <h2 id="activeCategoryHeading" class="text-lg font-extrabold text-slate-800 uppercase tracking-tight">
+                Tin Tức Môi Trường & Cuộc Sống
+              </h2>
+              <p class="text-xs text-slate-500">Tổng hợp tin tức môi trường, tài nguyên, nguồn nước và biến đổi khí hậu</p>
             </div>
-            <span class="text-[11px] text-slate-400">Click để xem chi tiết</span>
           </div>
 
-          <!-- Cards Scrollable Area -->
-          <div id="reportsListContainer" class="p-3 space-y-2.5 overflow-y-auto flex-1">
-            <!-- Populated by app.js -->
-          </div>
-        </div>
-
-        <!-- Right: Leaflet Interactive Map (7 cols on lg) -->
-        <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative">
-          <!-- Map Canvas -->
-          <div id="mainMap" class="w-full h-[540px] lg:h-[720px] z-10"></div>
-          
-          <!-- Legend Box Floating over map -->
-          <div class="absolute bottom-4 left-4 z-20 bg-white/95 backdrop-blur-sm p-3 rounded-xl shadow-md border border-slate-200 text-xs space-y-1.5 max-w-[200px]">
-            <div class="font-bold text-slate-700 text-[11px] uppercase tracking-wider mb-1">Mức độ nghiêm trọng</div>
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-red-600"></span>
-              <span class="text-slate-600">Khẩn cấp (Critical)</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-orange-500"></span>
-              <span class="text-slate-600">Nghiêm trọng (High)</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-amber-500"></span>
-              <span class="text-slate-600">Trung bình (Medium)</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-emerald-600"></span>
-              <span class="text-slate-600">Thấp (Low)</span>
-            </div>
+          <div class="flex flex-wrap items-center gap-1.5" id="newsSourceFilters">
+            <button onclick="filterRealNews('ALL')" data-src="ALL" class="news-src-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-eco-700 text-white shadow-sm">
+              Tất cả bài viết
+            </button>
+            <button onclick="filterRealNews('nước')" data-src="nước" class="news-src-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:border-eco-500">
+              Nước & Sông rạch
+            </button>
+            <button onclick="filterRealNews('rác')" data-src="rác" class="news-src-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:border-eco-500">
+              Rác thải & Tái chế
+            </button>
+            <button onclick="filterRealNews('khí hậu')" data-src="khí hậu" class="news-src-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:border-eco-500">
+              Khí hậu & Xanh
+            </button>
           </div>
         </div>
 
-      </div>
+        <div id="newsArticlesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div class="col-span-3 text-center py-8 text-xs text-slate-400">Đang tải tin tức môi trường mới nhất...</div>
+        </div>
+      </section>
+
+      <section id="videoSectionBlock" class="bg-slate-900 text-white rounded-2xl p-5 sm:p-6 shadow-md space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded-lg bg-rose-600 text-white text-[11px] font-extrabold uppercase tracking-wider">
+              ▶ Video & Phóng sự
+            </span>
+            <div>
+              <h2 class="text-base sm:text-lg font-extrabold text-white">Góc Nhìn Môi Trường TP. Cao Lãnh & Đồng Tháp</h2>
+              <p class="text-xs text-slate-400">Phóng sự truyền hình thực tế về công tác khắc phục ô nhiễm và bảo vệ môi trường</p>
+            </div>
+          </div>
+          <a href="https://www.youtube.com/results?search_query=%C3%B4+nhi%E1%BB%85m+m%C3%B4i+tr%C6%B0%E1%BB%9Dng+%C4%91%E1%BB%93ng+th%C3%A1p+cao+l%C3%A3nh" target="_blank" rel="noopener noreferrer"
+            class="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-white transition-colors">
+            Xem thêm trên YouTube ↗
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+          <div class="lg:col-span-7 space-y-2.5">
+            <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-black border border-slate-800 shadow-lg">
+              <iframe
+                id="youtubeMainPlayer"
+                class="w-full h-full"
+                src="https://www.youtube.com/embed/IYkZpuux51M"
+                title="Khắc phục ô nhiễm môi trường ở TP. Cao Lãnh | THDT"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+              </iframe>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <h3 id="youtubeCurrentTitle" class="text-sm font-bold text-slate-100">
+                Khắc phục ô nhiễm môi trường ở TP. Cao Lãnh | THDT
+              </h3>
+              <a id="youtubeWatchDirectBtn" href="https://www.youtube.com/watch?v=IYkZpuux51M" target="_blank" rel="noopener noreferrer"
+                class="text-xs font-bold text-emerald-400 hover:underline shrink-0">
+                Mở YouTube ↗
+              </a>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 space-y-2.5 max-h-[390px] overflow-y-auto pr-1" id="youtubePlaylistContainer"></div>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+          <div>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-eco-700">Cuộc sống xanh • Luật BVMT 2020</span>
+            <h3 class="text-base font-extrabold text-slate-800">Hướng Dẫn Phân Loại Rác Thải Sinh Hoạt Tại Nguồn</h3>
+          </div>
+          <button onclick="switchPortalTab('law')" class="text-xs font-bold text-eco-700 hover:underline">
+            Tra cứu mức phạt vi phạm môi trường →
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-1.5">
+            <div class="font-extrabold text-emerald-900 text-sm">🟢 1. Rác thải hữu cơ dễ phân hủy</div>
+            <p class="text-slate-600 leading-relaxed">Thức ăn thừa, rau củ quả hư hỏng, bã trà/cà phê, lá cây, cỏ cắt tỉa.</p>
+            <div class="text-[11px] font-semibold text-emerald-800 pt-1">→ Bỏ vào túi/thùng màu xanh lá để ủ phân compost.</div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-sky-50/70 border border-sky-200 space-y-1.5">
+            <div class="font-extrabold text-sky-900 text-sm">🔵 2. Rác thải có khả năng tái chế</div>
+            <p class="text-slate-600 leading-relaxed">Chai nhựa PET, thùng carton, giấy báo, lon nhôm, hộp thiếc, chai thủy tinh.</p>
+            <div class="text-[11px] font-semibold text-sky-800 pt-1">→ Làm sạch, ép gọn và chuyển điểm thu gom tái chế.</div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-1.5">
+            <div class="font-extrabold text-amber-900 text-sm">🟠 3. Rác thải còn lại & Chất thải nguy hại</div>
+            <p class="text-slate-600 leading-relaxed">Pin cũ, bóng đèn huỳnh quang, bình ắc quy, túi nilon dính bẩn, khẩu trang y tế.</p>
+            <div class="text-[11px] font-semibold text-amber-800 pt-1">→ Để riêng pin/bóng đèn vào điểm thu hồi chất thải nguy hại.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-eco-700">Kết nối cộng đồng</span>
+            <h3 class="text-base font-extrabold text-slate-800">Phản Ánh Môi Trường Mới Ghi Nhận Tại TP. Cao Lãnh</h3>
+          </div>
+          <button onclick="switchPortalTab('map')" class="px-3.5 py-2 rounded-xl bg-eco-50 hover:bg-eco-100 text-eco-800 text-xs font-bold transition-all">
+            Xem trên Bản đồ số →
+          </button>
+        </div>
+
+        <div id="homeRecentReportsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+      </section>
 
     </div>
 
     <!-- ========================================================================= -->
-    <!-- TAB 2: DANH SÁCH MỞ RỘNG (FULL TABLE VIEW)                                -->
+    <!-- TAB AI PHÂN TÍCH ẢNH HIỆN TRƯỜNG (DẠNG BẢN TIN / BÀI BÁO)                -->
+    <!-- ========================================================================= -->
+    <div id="view-ai" class="view-tab-content hidden space-y-6">
+      <section class="bg-gradient-to-r from-eco-800 via-eco-700 to-emerald-600 text-white rounded-2xl p-5 sm:p-6 shadow-md">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div class="flex flex-wrap items-center gap-2 mb-1.5">
+              <span class="px-2.5 py-0.5 rounded-full bg-white/15 text-[11px] font-extrabold uppercase tracking-wider">
+                ✨ AI Phân Tích Hiện Trường
+              </span>
+              <span class="px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-200 text-[11px] font-bold">
+                Chụp trên điện thoại & xuất bản tin bài báo
+              </span>
+            </div>
+            <h2 class="text-lg sm:text-2xl font-extrabold tracking-tight">
+              Nhận Diện Ô Nhiễm & Xuất Bản Tin Hiện Trường Từ Hình Ảnh
+            </h2>
+            <p class="text-xs sm:text-sm text-eco-50/95 mt-1 max-w-3xl">
+              Chụp ảnh trực tiếp trên điện thoại hoặc chọn ảnh hiện trường/bài báo để nhận diện mức độ ô nhiễm và xuất bản tin ghi nhận kèm chú thích, khuyến nghị xử lý.
+            </p>
+          </div>
+          <button type="button" onclick="switchPortalTab('home')" class="px-3.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-xs font-bold text-white transition-colors shrink-0">
+            ← Về Trang chủ
+          </button>
+        </div>
+      </section>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Cột trái: Chụp / Chọn ảnh & Ngữ cảnh -->
+        <section class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-sm space-y-4">
+          <h3 class="text-sm font-extrabold uppercase tracking-wide text-slate-800 flex items-center gap-2">
+            <span class="w-2 h-4 rounded-xs bg-eco-700 inline-block"></span>
+            <span>1. Chụp hoặc tải ảnh hiện trường</span>
+          </h3>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <label class="cursor-pointer flex flex-col items-center justify-center p-3.5 rounded-2xl border-2 border-dashed border-eco-400 bg-eco-50/60 hover:bg-eco-50 text-eco-800 text-center transition-colors">
+              <svg class="w-6 h-6 mb-1 text-eco-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+              <span class="text-xs font-extrabold">Chụp ảnh (Camera)</span>
+              <span class="text-[10px] text-eco-700/80 mt-0.5">Mở camera điện thoại</span>
+              <input type="file" id="aiCameraInput" accept="image/*" capture="environment" onchange="onAiImageSelected(event)" class="hidden">
+            </label>
+
+            <label class="cursor-pointer flex flex-col items-center justify-center p-3.5 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-700 text-center transition-colors">
+              <svg class="w-6 h-6 mb-1 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              <span class="text-xs font-extrabold">Chọn ảnh có sẵn</span>
+              <span class="text-[10px] text-slate-500 mt-0.5">Thư viện / Ảnh tải về</span>
+              <input type="file" id="aiGalleryInput" accept="image/*" onchange="onAiImageSelected(event)" class="hidden">
+            </label>
+          </div>
+
+          <div id="aiPreviewBox" class="relative w-full aspect-video rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center">
+            <div id="aiPreviewPlaceholder" class="text-center p-4 text-xs text-slate-400">
+              Chưa có ảnh nào được chọn. Hãy chụp ảnh hoặc chọn ảnh để phân tích.
+            </div>
+            <img id="aiPreviewImage" src="" alt="Ảnh hiện trường phân tích AI" class="hidden w-full h-full object-cover">
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <label for="aiContextCategory" class="block font-bold text-slate-700 mb-1">Dạng hiện trường / Chuyên mục</label>
+              <select id="aiContextCategory" onchange="reAnalyzeAiIfReady()" class="w-full py-2.5 px-3 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-eco-600 focus:outline-none">
+                <option value="auto">Tự động nhận diện từ hình ảnh</option>
+                <option value="o-nhiem-rac">Ô nhiễm rác thải / Bãi rác tự phát</option>
+                <option value="o-nhiem-nuoc">Ô nhiễm nguồn nước / Kênh rạch</option>
+                <option value="o-nhiem-khong-khi">Ô nhiễm khói bụi / Đốt rác / Mùi hôi</option>
+                <option value="song-xanh">Cảnh quan xanh / Điểm sạch đẹp</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="aiContextLocation" class="block font-bold text-slate-700 mb-1">Địa điểm / Khu vực ghi nhận</label>
+              <input type="text" id="aiContextLocation" value="TP. Cao Lãnh, Đồng Tháp" oninput="reAnalyzeAiIfReady()" placeholder="Ví dụ: Phường 6, Kênh rạch, TP. Cao Lãnh..."
+                class="w-full py-2.5 px-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-eco-600 focus:outline-none">
+            </div>
+
+            <button type="button" onclick="runAiSceneAnalysis()" class="w-full py-3 rounded-xl bg-eco-700 hover:bg-eco-800 text-white font-extrabold text-xs tracking-wide shadow-sm transition-colors">
+              Phân tích & Xuất bản tin ngay
+            </button>
+          </div>
+        </section>
+
+        <!-- Cột phải: Kết quả dạng Bản tin / Bài báo nhận định -->
+        <section class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-4 rounded-xs bg-rose-600 inline-block"></span>
+              <h3 class="text-sm font-extrabold uppercase tracking-wide text-slate-800">
+                2. Bản tin nhận định hiện trường
+              </h3>
+            </div>
+            <span id="aiArticleTimestamp" class="text-[11px] text-slate-400 font-medium">Chờ dữ liệu ảnh</span>
+          </div>
+
+          <div id="aiEmptyArticleState" class="py-10 text-center space-y-2 text-xs text-slate-400">
+            <p class="font-semibold text-slate-500">Chưa có bản tin phân tích nào được tạo</p>
+            <p>Sau khi chụp hoặc chọn ảnh, hệ thống sẽ xuất ra bài báo nhận định mức độ ô nhiễm tại đây.</p>
+          </div>
+
+          <article id="aiArticleResultCard" class="hidden space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span id="aiArtCategoryBadge" class="px-3 py-1 rounded-full bg-rose-100 text-rose-800 text-[11px] font-extrabold">
+                Ô nhiễm môi trường
+              </span>
+              <span id="aiArtSeverityBadge" class="px-3 py-1 rounded-full bg-rose-100 text-rose-800 text-[11px] font-extrabold">
+                Mức độ: Nghiêm trọng
+              </span>
+            </div>
+
+            <h4 id="aiArtHeadline" class="text-lg sm:text-xl font-extrabold text-slate-900 leading-snug"></h4>
+
+            <p id="aiArtSapo" class="text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 p-3.5 rounded-xl border-l-4 border-rose-600 leading-relaxed"></p>
+
+            <!-- Chú thích ngắn gọn cho ảnh hiện trường -->
+            <p id="aiArtCaption" class="text-xs italic text-slate-500 border-b border-slate-100 pb-3"></p>
+
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+              <div class="flex items-center justify-between text-xs font-bold">
+                <span class="text-slate-700">Mức độ ô nhiễm ghi nhận</span>
+                <span id="aiArtScoreText" class="text-rose-700">0/100</span>
+              </div>
+              <div class="w-full h-2.5 rounded-full bg-slate-200 overflow-hidden">
+                <div id="aiArtScoreBar" class="h-full rounded-full bg-rose-600 transition-all duration-300" style="width: 0%;"></div>
+              </div>
+            </div>
+
+            <div class="space-y-3 text-xs sm:text-sm text-slate-700 leading-relaxed">
+              <div>
+                <h5 class="font-extrabold text-slate-900 mb-1">Nhận định tình trạng hiện trường</h5>
+                <p id="aiArtObservation"></p>
+              </div>
+
+              <div>
+                <h5 class="font-extrabold text-slate-900 mb-1">Khuyến nghị & Hướng xử lý</h5>
+                <p id="aiArtRecommendation"></p>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-amber-50/80 border border-amber-200/80 text-[11px] text-amber-900 leading-relaxed">
+              <strong>Chú thích:</strong> Bản tin hỗ trợ nhận diện nhanh tình trạng môi trường từ hình ảnh để phục vụ phản ánh và theo dõi; cần xác minh thực tế tại địa phương để xử lý dứt điểm.
+            </div>
+
+            <div class="pt-2 flex flex-wrap items-center gap-2.5">
+              <button type="button" onclick="copyAiArticleText()" class="flex-1 min-w-[140px] py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors">
+                Sao chép bản tin
+              </button>
+              <button type="button" onclick="applyAiArticleToReportForm()" class="flex-1 min-w-[180px] py-2.5 px-4 rounded-xl bg-eco-700 hover:bg-eco-800 text-white text-xs font-bold transition-colors">
+                Đưa vào form Gửi phản ánh →
+              </button>
+            </div>
+
+            <div id="aiActionToast" class="hidden text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-3.5 py-2"></div>
+          </article>
+        </section>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB PHÁP LUẬT & MỨC PHẠT MÔI TRƯỜNG                                       -->
+    <!-- ========================================================================= -->
+    <div id="view-law" class="view-tab-content hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 max-w-5xl mx-auto space-y-6">
+        <div class="border-b border-slate-200 pb-4">
+          <span class="px-2.5 py-1 rounded-full bg-eco-100 text-eco-800 text-[11px] font-bold">Nghị định 45/2022/NĐ-CP</span>
+          <h2 class="text-xl font-extrabold text-slate-800 mt-2">Tra Cứu Mức Xử Phạt Vi Phạm Hành Chính Về Bảo Vệ Môi Trường</h2>
+          <p class="text-xs text-slate-500 mt-1">Áp dụng đối với cá nhân vi phạm tại khu vực đô thị, khu dân cư và nơi công cộng (tổ chức vi phạm phạt gấp 2 lần)</p>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-eco-700 text-white">
+                <th class="py-3 px-4 rounded-tl-xl">Hành vi vi phạm phổ biến</th>
+                <th class="py-3 px-4">Mức phạt tiền (Cá nhân)</th>
+                <th class="py-3 px-4 rounded-tr-xl">Biện pháp khắc phục</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+              <tr class="hover:bg-slate-50">
+                <td class="py-3 px-4 font-semibold text-slate-800">Vứt, thải, bỏ đầu, mẩu, tàn thuốc lá không đúng nơi quy định</td>
+                <td class="py-3 px-4 font-bold text-amber-700">100.000đ – 150.000đ</td>
+                <td class="py-3 px-4 text-slate-600">Buộc thu gom, bỏ đúng nơi quy định</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="py-3 px-4 font-semibold text-slate-800">Vứt, thải rác thải sinh hoạt trên vỉa hè, lòng đường hoặc vào hệ thống thoát nước</td>
+                <td class="py-3 px-4 font-bold text-rose-700">1.000.000đ – 2.000.000đ</td>
+                <td class="py-3 px-4 text-slate-600">Buộc khôi phục tình trạng ban đầu</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="py-3 px-4 font-semibold text-slate-800">Không phân loại chất thải rắn sinh hoạt theo quy định</td>
+                <td class="py-3 px-4 font-bold text-amber-700">500.000đ – 1.000.000đ</td>
+                <td class="py-3 px-4 text-slate-600">Buộc phân loại đúng quy định</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="py-3 px-4 font-semibold text-slate-800">Đổ, thải chất thải rắn thông thường trái quy định (từ 1.000 kg đến dưới 2.000 kg)</td>
+                <td class="py-3 px-4 font-bold text-rose-700">5.000.000đ – 10.000.000đ</td>
+                <td class="py-3 px-4 text-slate-600">Buộc thu gom, xử lý đạt quy chuẩn</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="py-3 px-4 font-semibold text-slate-800">Gây tiếng ồn vượt quy chuẩn kỹ thuật về tiếng ồn (từ 5 dBA đến dưới 10 dBA)</td>
+                <td class="py-3 px-4 font-bold text-rose-700">5.000.000đ – 20.000.000đ</td>
+                <td class="py-3 px-4 text-slate-600">Buộc thực hiện biện pháp giảm thiểu tiếng ồn</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="p-4 rounded-xl bg-eco-50 border border-eco-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <span class="text-eco-900 font-semibold">Phát hiện hành vi vi phạm trên địa bàn TP. Cao Lãnh? Hãy gửi ảnh & GPS để cơ quan chức năng xử lý.</span>
+          <button onclick="window.app.openCreateModal()" class="px-4 py-2 rounded-xl bg-eco-700 text-white font-bold">
+            + Gửi phản ánh vi phạm
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 1: BẢN ĐỒ SỐ Ô NHIỄM                                                 -->
+    <!-- ========================================================================= -->
+    <div id="view-map" class="view-tab-content hidden">
+      <div class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-sm mb-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+          <div class="lg:col-span-2 relative">
+            <input type="text" id="searchInput" placeholder="Tìm theo tiêu đề, tuyến đường, địa chỉ..."
+              class="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-eco-600">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </div>
+
+          <div>
+            <select id="filterStatus" class="w-full py-2.5 px-3 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-eco-600 bg-white">
+              <option value="">Tất cả trạng thái</option>
+              <option value="Chờ tiếp nhận">Chờ tiếp nhận</option>
+              <option value="Đã tiếp nhận">Đã tiếp nhận</option>
+              <option value="Đã xác minh">Đã xác minh</option>
+              <option value="Đang xử lý">Đang xử lý</option>
+              <option value="Hoàn thành">Hoàn thành</option>
+              <option value="Từ chối">Từ chối</option>
+            </select>
+          </div>
+
+          <div>
+            <select id="filterType" class="w-full py-2.5 px-3 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-eco-600 bg-white">
+              <option value="">Tất cả loại ô nhiễm</option>
+            </select>
+          </div>
+
+          <div class="flex items-center gap-1.5">
+            <select id="filterSeverity" class="w-full py-2.5 px-3 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-eco-600 bg-white">
+              <option value="">Mọi mức độ</option>
+              <option value="Thấp">Thấp</option>
+              <option value="Trung bình">Trung bình</option>
+              <option value="Nghiêm trọng">Nghiêm trọng</option>
+              <option value="Khẩn cấp">Khẩn cấp</option>
+            </select>
+            <button onclick="window.app.resetFilters()" title="Đặt lại bộ lọc" class="p-2.5 rounded-xl text-slate-500 hover:text-eco-700 bg-slate-50 hover:bg-eco-50 border border-slate-200 shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        <div class="lg:col-span-5 flex flex-col max-h-[720px] bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+          <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+            <div class="flex items-center gap-2">
+              <h3 class="font-bold text-xs uppercase tracking-wider text-slate-700">Điểm nóng môi trường</h3>
+              <span id="reportsCountBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-eco-100 text-eco-800">
+                0 phản ánh
+              </span>
+            </div>
+            <span class="text-[11px] text-slate-400">Nhấn vào thẻ để xem chi tiết</span>
+          </div>
+          <div id="reportsListContainer" class="p-3.5 space-y-3 overflow-y-auto flex-1 bg-slate-50/40"></div>
+        </div>
+
+        <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden relative">
+          <div id="mainMap" class="w-full h-[540px] lg:h-[720px] z-10"></div>
+
+          <div class="absolute bottom-5 left-5 z-20 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-lg border border-slate-200/80 text-xs space-y-2 max-w-[210px]">
+            <div class="font-bold text-slate-700 text-[11px] uppercase tracking-wider mb-1">Mức độ nghiêm trọng</div>
+            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-600"></span><span class="text-slate-600 font-medium">Khẩn cấp</span></div>
+            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-orange-500"></span><span class="text-slate-600 font-medium">Nghiêm trọng</span></div>
+            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-amber-500"></span><span class="text-slate-600 font-medium">Trung bình</span></div>
+            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-emerald-600"></span><span class="text-slate-600 font-medium">Thấp</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 2: SỔ BỘ PHẢN ÁNH                                                    -->
     <!-- ========================================================================= -->
     <div id="view-list" class="view-tab-content hidden">
-      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div class="p-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+      <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 bg-slate-50">
           <div>
-            <h3 class="font-bold text-base text-slate-800">Sổ bộ tiếp nhận phản ánh ô nhiễm</h3>
-            <p class="text-xs text-slate-500">Danh mục toàn bộ báo cáo từ nhân dân trên địa bàn Thành phố Cao Lãnh</p>
+            <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 text-[10px] font-bold uppercase">Khu vực nghiệp vụ nội bộ</span>
+            <h3 class="font-bold text-base text-slate-800 mt-1">Sổ bộ tiếp nhận & xử lý phản ánh ô nhiễm</h3>
+            <p class="text-xs text-slate-500">Danh mục toàn bộ hồ sơ dành cho Cán bộ chuyên môn / Công an & Quản lý điều phối</p>
           </div>
-          <button onclick="window.print()" class="px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-semibold text-slate-700 flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+          <button onclick="window.print()" class="px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+            </svg>
             <span>In sổ sách</span>
           </button>
         </div>
@@ -336,208 +863,143 @@
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="bg-slate-50 text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
-                <th class="py-3 px-4">Mã</th>
-                <th class="py-3 px-4">Tiêu đề & Địa bàn</th>
-                <th class="py-3 px-4">Phân loại</th>
-                <th class="py-3 px-4">Mức độ</th>
-                <th class="py-3 px-4">Trạng thái</th>
-                <th class="py-3 px-4">Thời gian</th>
-                <th class="py-3 px-4 text-right">Thao tác</th>
+                <th class="py-3.5 px-4">Mã</th>
+                <th class="py-3.5 px-4">Tiêu đề & Địa bàn</th>
+                <th class="py-3.5 px-4">Phân loại</th>
+                <th class="py-3.5 px-4">Mức độ</th>
+                <th class="py-3.5 px-4">Trạng thái</th>
+                <th class="py-3.5 px-4">Thời gian</th>
+                <th class="py-3.5 px-4 text-right">Thao tác</th>
               </tr>
             </thead>
-            <tbody id="reportsTableBody">
-              <!-- Populated by app.js -->
-            </tbody>
+            <tbody id="reportsTableBody"></tbody>
           </table>
         </div>
       </div>
     </div>
 
     <!-- ========================================================================= -->
-    <!-- TAB 3: THỐNG KÊ & BÁO CÁO (ANALYTICS DASHBOARD)                            -->
+    <!-- TAB 3: THỐNG KÊ & BÁO CÁO                                                 -->
     <!-- ========================================================================= -->
     <div id="view-stats" class="view-tab-content hidden space-y-6">
-      
-      <!-- Manager Header Summary -->
-      <div class="bg-gradient-to-r from-eco-800 to-eco-700 rounded-2xl p-6 text-white shadow-md">
+      <div class="bg-gradient-to-r from-eco-900 via-eco-800 to-emerald-700 rounded-2xl p-6 text-white shadow-md">
         <div class="max-w-2xl">
-          <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-white/20 text-white backdrop-blur-sm">Báo cáo quản lý</span>
-          <h2 class="text-2xl font-bold mt-2">Chỉ số Giám sát & Phục hồi Môi trường Đô thị</h2>
-          <p class="text-sm text-eco-100 mt-1 leading-relaxed">
-            Hệ thống tự động tổng hợp dữ liệu phản ánh từ 3 nguồn: Rác thải sinh hoạt, Nguồn nước xả thải, Khí thải & Khói bụi công nghiệp, và Ô nhiễm tiếng ồn.
+          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-white/20 text-white">Báo cáo điều hành Quản lý (Admin)</span>
+          <h2 class="text-2xl font-bold mt-2.5">Chỉ số Giám sát & Hiệu suất Xử lý Môi trường Đô thị</h2>
+          <p class="text-sm text-eco-100 mt-1.5 leading-relaxed">
+            Dữ liệu tổng hợp nội bộ phục vụ công tác điều phối cán bộ và báo cáo UBND / Phòng TN&MT TP. Cao Lãnh.
           </p>
         </div>
       </div>
 
-      <!-- Charts Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
-        <!-- Chart 1: Donut pollution types -->
-        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-          <div class="flex items-center justify-between mb-4">
-            <div>
-              <h4 class="font-bold text-sm text-slate-800">Cơ cấu theo Loại hình Ô nhiễm</h4>
-              <p class="text-xs text-slate-500">Tỷ lệ phân bố các vụ việc phát sinh</p>
-            </div>
-            <span class="p-2 rounded-xl bg-eco-50 text-eco-700">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/></svg>
-            </span>
-          </div>
-          <div class="relative h-64">
-            <canvas id="chartPollutionTypes"></canvas>
-          </div>
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <div class="text-slate-400 font-semibold">Tổng hồ sơ</div>
+          <div id="statTotal" class="text-2xl font-extrabold text-slate-800 mt-1">0</div>
         </div>
-
-        <!-- Chart 2: Bar status progress -->
-        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-          <div class="flex items-center justify-between mb-4">
-            <div>
-              <h4 class="font-bold text-sm text-slate-800">Tiến độ Giải quyết Hồ sơ</h4>
-              <p class="text-xs text-slate-500">Số lượng phản ánh qua các giai đoạn xử lý</p>
-            </div>
-            <span class="p-2 rounded-xl bg-blue-50 text-blue-700">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-            </span>
-          </div>
-          <div class="relative h-64">
-            <canvas id="chartStatusProgress"></canvas>
-          </div>
+        <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200 shadow-sm">
+          <div class="text-amber-700 font-semibold">Chờ tiếp nhận</div>
+          <div id="statPending" class="text-2xl font-extrabold text-amber-800 mt-1">0</div>
         </div>
-
+        <div class="bg-blue-50 p-4 rounded-2xl border border-blue-200 shadow-sm">
+          <div class="text-blue-700 font-semibold">Đang xử lý</div>
+          <div id="statProcessing" class="text-2xl font-extrabold text-blue-800 mt-1">0</div>
+        </div>
+        <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-200 shadow-sm">
+          <div class="text-emerald-700 font-semibold">Hoàn thành</div>
+          <div id="statCompleted" class="text-2xl font-extrabold text-emerald-800 mt-1">0</div>
+        </div>
+        <div class="bg-purple-50 p-4 rounded-2xl border border-purple-200 shadow-sm col-span-2 sm:col-span-1">
+          <div class="text-purple-700 font-semibold">Thời gian TB</div>
+          <div id="statAvgTime" class="text-2xl font-extrabold text-purple-800 mt-1">0h</div>
+        </div>
       </div>
 
-      <!-- Officers Task Allocation Table -->
-      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
-        <h4 class="font-bold text-sm text-slate-800 mb-1">Đội ngũ Cán bộ phụ trách xử lý hiện trường</h4>
-        <p class="text-xs text-slate-500 mb-4">Danh sách cán bộ được phân công tiếp nhận và xác minh phản ánh</p>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="card-elevated p-6 rounded-2xl border border-slate-200/80">
+          <h4 class="font-bold text-sm text-slate-800 mb-1">Cơ cấu theo Loại hình Ô nhiễm</h4>
+          <p class="text-xs text-slate-500 mb-4">Tỷ lệ phân bố các vụ việc phát sinh</p>
+          <div class="relative h-64"><canvas id="chartPollutionTypes"></canvas></div>
+        </div>
+
+        <div class="card-elevated p-6 rounded-2xl border border-slate-200/80">
+          <h4 class="font-bold text-sm text-slate-800 mb-1">Tiến độ Giải quyết Hồ sơ</h4>
+          <p class="text-xs text-slate-500 mb-4">Số lượng phản ánh qua các giai đoạn xử lý</p>
+          <div class="relative h-64"><canvas id="chartStatusProgress"></canvas></div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6">
+        <h4 class="font-bold text-sm text-slate-800 mb-1">Đội ngũ Cán bộ & Lực lượng phối hợp xử lý</h4>
+        <p class="text-xs text-slate-500 mb-4">Danh sách cán bộ phụ trách tiếp nhận, kiểm tra và xử lý vi phạm</p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="p-4 rounded-xl border border-slate-200/80 bg-slate-50">
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold">PT</div>
+              <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-bold">PT</div>
               <div>
                 <h5 class="font-bold text-sm text-slate-800">Phạm Minh Tuấn</h5>
-                <p class="text-xs text-slate-500">Cán bộ Đô thị</p>
+                <p class="text-xs text-slate-500">Cán bộ Đô thị / Phối hợp kiểm tra</p>
               </div>
             </div>
             <div class="mt-3 text-xs text-slate-600 flex justify-between pt-2 border-t border-slate-200">
-              <span>Đang phụ trách:</span>
-              <strong class="text-blue-700">9 vụ việc</strong>
+              <span>Chuyên trách:</span>
+              <strong class="text-blue-700">Rác thải & Tiếng ồn</strong>
             </div>
           </div>
 
-          <div class="p-4 rounded-xl border border-slate-200/80 bg-slate-50">
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-eco-100 text-eco-700 flex items-center justify-center font-bold">KO</div>
+              <div class="w-10 h-10 rounded-full bg-eco-100 text-eco-800 flex items-center justify-center font-bold">KO</div>
               <div>
                 <h5 class="font-bold text-sm text-slate-800">Võ Thị Kim Oanh</h5>
                 <p class="text-xs text-slate-500">Cán bộ Môi trường</p>
               </div>
             </div>
             <div class="mt-3 text-xs text-slate-600 flex justify-between pt-2 border-t border-slate-200">
-              <span>Đang phụ trách:</span>
-              <strong class="text-eco-700">8 vụ việc</strong>
+              <span>Chuyên trách:</span>
+              <strong class="text-eco-700">Nước thải & Khói bụi</strong>
             </div>
           </div>
 
-          <div class="p-4 rounded-xl border border-slate-200/80 bg-slate-50">
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold">QH</div>
+              <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center font-bold">QH</div>
               <div>
                 <h5 class="font-bold text-sm text-slate-800">Đặng Quốc Hùng</h5>
-                <p class="text-xs text-slate-500">Trưởng phòng TNMT</p>
+                <p class="text-xs text-slate-500">Quản lý / Điều phối hệ thống</p>
               </div>
             </div>
             <div class="mt-3 text-xs text-slate-600 flex justify-between pt-2 border-t border-slate-200">
               <span>Vai trò:</span>
-              <strong class="text-purple-700">Điều phối & Quản lý</strong>
+              <strong class="text-purple-700">Điều phối & Quản trị</strong>
             </div>
           </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ========================================================================= -->
-    <!-- TAB 4: HƯỚNG DẪN & QUY TRÌNH TIẾP NHẬN                                    -->
-    <!-- ========================================================================= -->
-    <div id="view-about" class="view-tab-content hidden space-y-6">
-      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 max-w-4xl mx-auto">
-        <h2 class="text-xl font-bold text-slate-800 mb-2">Quy trình 5 Bước Tiếp Nhận & Khắc Phục Ô Nhiễm</h2>
-        <p class="text-xs text-slate-500 mb-8">Hệ thống áp dụng chuẩn quy trình giám sát công khai, minh bạch theo dõi qua thời gian thực</p>
-
-        <div class="space-y-6 relative before:absolute before:inset-0 before:left-4 before:w-0.5 before:bg-eco-200">
-          
-          <div class="relative flex items-start gap-4">
-            <div class="w-8 h-8 rounded-full bg-eco-600 text-white flex items-center justify-center font-bold text-sm shrink-0 z-10 shadow-sm">1</div>
-            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex-1">
-              <h4 class="font-bold text-sm text-slate-800">Người dân phát hiện & Gửi phản ánh</h4>
-              <p class="text-xs text-slate-600 mt-1">Người dân dùng điện thoại hoặc máy tính ghi lại hình ảnh bãi rác, điểm xả thải, chọn vị trí trên bản đồ và gửi thông tin.</p>
-            </div>
-          </div>
-
-          <div class="relative flex items-start gap-4">
-            <div class="w-8 h-8 rounded-full bg-eco-600 text-white flex items-center justify-center font-bold text-sm shrink-0 z-10 shadow-sm">2</div>
-            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex-1">
-              <h4 class="font-bold text-sm text-slate-800">Bộ phận Tiếp nhận thẩm định (ACCEPTED)</h4>
-              <p class="text-xs text-slate-600 mt-1">Phòng Tài nguyên & Môi trường kiểm tra tính xác thực, phân loại nhóm ô nhiễm và phân công cán bộ chuyên môn.</p>
-            </div>
-          </div>
-
-          <div class="relative flex items-start gap-4">
-            <div class="w-8 h-8 rounded-full bg-eco-600 text-white flex items-center justify-center font-bold text-sm shrink-0 z-10 shadow-sm">3</div>
-            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex-1">
-              <h4 class="font-bold text-sm text-slate-800">Khảo sát & Xác minh hiện trường (VERIFIED)</h4>
-              <p class="text-xs text-slate-600 mt-1">Cán bộ đến vị trí được ghim tọa độ trên bản đồ, đo đạc nồng độ, lấy mẫu nước/không khí và lập biên bản ghi nhận.</p>
-            </div>
-          </div>
-
-          <div class="relative flex items-start gap-4">
-            <div class="w-8 h-8 rounded-full bg-eco-600 text-white flex items-center justify-center font-bold text-sm shrink-0 z-10 shadow-sm">4</div>
-            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex-1">
-              <h4 class="font-bold text-sm text-slate-800">Triển khai xử lý & Khắc phục (PROCESSING)</h4>
-              <p class="text-xs text-slate-600 mt-1">Điều động xe chuyên dụng thu gom rác, nạo vét kênh mương hoặc xử phạt hành chính đối với các cơ sở vi phạm.</p>
-            </div>
-          </div>
-
-          <div class="relative flex items-start gap-4">
-            <div class="w-8 h-8 rounded-full bg-eco-600 text-white flex items-center justify-center font-bold text-sm shrink-0 z-10 shadow-sm">5</div>
-            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex-1">
-              <h4 class="font-bold text-sm text-slate-800">Nghiệm thu & Đăng tải ảnh kết quả (COMPLETED)</h4>
-              <p class="text-xs text-slate-600 mt-1">Chụp ảnh hiện trường sau khi hoàn trả mặt bằng sạch đẹp, cập nhật trạng thái Hoàn thành để cộng đồng cùng giám sát.</p>
-            </div>
-          </div>
-
         </div>
       </div>
     </div>
 
   </main>
 
-  <!-- ========================================================================= -->
-  <!-- MODAL 1: CHI TIẾT PHẢN ÁNH & SO SÁNH ẢNH & TIẾN TRÌNH XỬ LÝ               -->
-  <!-- ========================================================================= -->
+  <!-- MODAL 1: CHI TIẾT PHẢN ÁNH -->
   <div id="reportDetailModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
-      
-      <!-- Modal Header -->
-      <div class="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/80">
+    <div class="modal-pop bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
         <div class="flex items-center gap-2.5">
-          <span id="modalReportId" class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-200 text-slate-700">#0</span>
-          <span id="modalReportStatus" class="px-3 py-0.5 rounded-full text-xs font-semibold">Trạng thái</span>
-          <span id="modalReportSeverity" class="px-2 py-0.5 rounded text-xs font-bold text-white">Mức độ</span>
+          <span id="modalReportId" class="text-xs font-mono font-bold px-2.5 py-1 rounded-md bg-slate-200 text-slate-700">#0</span>
+          <span id="modalReportStatus" class="px-3 py-1 rounded-full text-xs font-semibold">Trạng thái</span>
+          <span id="modalReportSeverity" class="px-2.5 py-0.5 rounded-md text-xs font-bold text-white">Mức độ</span>
         </div>
-        <button onclick="window.app.closeReportDetail()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200/60 transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        <button onclick="window.app.closeReportDetail()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200/60">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
         </button>
       </div>
 
-      <!-- Modal Body (Scrollable) -->
       <div class="p-5 overflow-y-auto space-y-6 flex-1 text-xs">
-        
-        <!-- Title & Basic Info -->
         <div>
           <h3 id="modalReportTitle" class="text-lg font-bold text-slate-900 leading-snug">Tiêu đề phản ánh</h3>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 p-3 bg-slate-50 rounded-xl border border-slate-200/70 text-slate-600">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 p-3.5 bg-slate-50 rounded-xl border border-slate-200/70 text-slate-600">
             <div><span class="text-slate-400">Phân loại:</span> <strong id="modalReportType" class="text-slate-800"></strong></div>
             <div><span class="text-slate-400">Người báo cáo:</span> <strong id="modalReportCitizen" class="text-slate-800"></strong></div>
             <div><span class="text-slate-400">Thời gian tạo:</span> <span id="modalReportCreated" class="text-slate-700"></span></div>
@@ -546,158 +1008,124 @@
           </div>
         </div>
 
-        <!-- Description -->
         <div>
           <h4 class="font-bold text-xs uppercase text-slate-500 mb-1.5">Mô tả chi tiết từ người dân</h4>
-          <p id="modalReportDesc" class="p-3 bg-white border border-slate-200 rounded-xl text-slate-700 leading-relaxed"></p>
+          <p id="modalReportDesc" class="p-3.5 bg-white border border-slate-200 rounded-xl text-slate-700 leading-relaxed"></p>
         </div>
 
-        <!-- Before & After Photo Comparison Box -->
         <div>
-          <h4 class="font-bold text-xs uppercase text-slate-500 mb-2 flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-eco-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            <span>Minh chứng hình ảnh (Trước và Sau xử lý)</span>
-          </h4>
-          <div id="modalImagesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Populated by app.js -->
-          </div>
+          <h4 class="font-bold text-xs uppercase text-slate-500 mb-2">Minh chứng hình ảnh (Trước và Sau xử lý)</h4>
+          <div id="modalImagesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </div>
 
-        <!-- Process Logs Timeline -->
         <div>
-          <h4 class="font-bold text-xs uppercase text-slate-500 mb-3 flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-eco-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <span>Nhật ký tiến độ xử lý của cán bộ</span>
-          </h4>
-          <div id="modalLogsContainer" class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <!-- Populated by app.js -->
-          </div>
+          <h4 class="font-bold text-xs uppercase text-slate-500 mb-3">Nhật ký tiến độ xử lý</h4>
+          <div id="modalLogsContainer" class="p-4 bg-slate-50 rounded-xl border border-slate-200"></div>
         </div>
 
-        <!-- OFFICER & MANAGER CONTROL PANEL (Update status) -->
-        <div id="officerControlPanel" class="p-4 bg-eco-50/70 border border-eco-200 rounded-xl space-y-3">
-          <div class="flex items-center gap-2 text-eco-900 font-bold text-xs uppercase tracking-wider">
-            <svg class="w-4 h-4 text-eco-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-            <span>Dành cho Cán bộ & Quản lý: Cập nhật tiến độ xử lý</span>
+        <div id="officerControlPanel" class="p-4 bg-eco-50/80 border border-eco-200 rounded-xl space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <span id="officerPanelHeading" class="text-eco-900 font-bold text-xs uppercase tracking-wider">
+              Nghiệp vụ xử lý hồ sơ
+            </span>
+            <span id="officerPanelRoleTag" class="px-2 py-0.5 rounded bg-eco-700 text-white text-[10px] font-bold">
+              CÁN BỘ / QUẢN LÝ
+            </span>
           </div>
-          
+
           <form onsubmit="window.app.handleStatusUpdateSubmit(event)" class="space-y-3">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label class="block text-[11px] font-semibold text-slate-700 mb-1">Chuyển trạng thái</label>
-                <select id="updateStatus" class="w-full py-1.5 px-2.5 rounded-lg border border-slate-300 text-xs bg-white focus:ring-1 focus:ring-eco-600">
-                  <option value="ACCEPTED">Đã tiếp nhận (ACCEPTED)</option>
-                  <option value="VERIFIED">Đã xác minh hiện trường (VERIFIED)</option>
-                  <option value="PROCESSING">Đang xử lý / Khắc phục (PROCESSING)</option>
-                  <option value="COMPLETED">Đã hoàn thành sạch đẹp (COMPLETED)</option>
-                  <option value="REJECTED">Từ chối / Tin sai lệch (REJECTED)</option>
+                <select id="updateStatus" class="w-full py-2 px-2.5 rounded-lg border border-slate-300 text-xs bg-white">
+                  <option value="Đã tiếp nhận">Đã tiếp nhận</option>
+                  <option value="Đã xác minh">Đã xác minh hiện trường</option>
+                  <option value="Đang xử lý">Đang xử lý / Khắc phục</option>
+                  <option value="Hoàn thành">Đã hoàn thành sạch đẹp</option>
+                  <option value="Từ chối">Từ chối / Tin sai lệch</option>
                 </select>
               </div>
 
-              <div>
+              <div id="assignOfficerWrapper">
                 <label class="block text-[11px] font-semibold text-slate-700 mb-1">Phân công cán bộ phụ trách</label>
-                <select id="updateAssignedTo" class="w-full py-1.5 px-2.5 rounded-lg border border-slate-300 text-xs bg-white focus:ring-1 focus:ring-eco-600">
-                  <!-- Populated by app.js -->
-                </select>
+                <select id="updateAssignedTo" class="w-full py-2 px-2.5 rounded-lg border border-slate-300 text-xs bg-white"></select>
               </div>
             </div>
 
             <div>
               <label class="block text-[11px] font-semibold text-slate-700 mb-1">Biên bản / Ghi chú tiến độ hiện trường</label>
-              <textarea id="updateNote" rows="2" placeholder="Ví dụ: Đã cử 2 xe ép rác đến thu gom, lập biên bản nhắc nhở các hộ dân xung quanh..." 
-                class="w-full p-2.5 rounded-lg border border-slate-300 text-xs focus:ring-1 focus:ring-eco-600 focus:outline-none"></textarea>
+              <textarea id="updateNote" rows="2" placeholder="Ghi rõ kết quả kiểm tra, biện pháp xử lý hoặc biên bản vi phạm..."
+                class="w-full p-2.5 rounded-lg border border-slate-300 text-xs focus:outline-none"></textarea>
             </div>
 
             <div>
-              <label class="block text-[11px] font-semibold text-slate-700 mb-1">Link ảnh sau khi đã khắc phục xong (Ảnh AFTER)</label>
-              <input type="url" id="updateAfterImageUrl" placeholder="https://images.unsplash.com/photo-..." 
-                class="w-full p-2 rounded-lg border border-slate-300 text-xs focus:ring-1 focus:ring-eco-600">
-              <div class="flex items-center gap-2 mt-1">
-                <span class="text-[10px] text-slate-500">Mẫu ảnh sạch đẹp:</span>
-                <button type="button" onclick="document.getElementById('updateAfterImageUrl').value='https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600'" class="text-[10px] text-eco-700 hover:underline">
-                  Công viên sạch 1
-                </button>
-                <button type="button" onclick="document.getElementById('updateAfterImageUrl').value='https://images.unsplash.com/photo-1503596476-1c12a8ba09a9?w=600'" class="text-[10px] text-eco-700 hover:underline">
-                  Đường phố sạch 2
-                </button>
-              </div>
+              <label class="block text-[11px] font-semibold text-slate-700 mb-1">Ảnh sau khắc phục (Tải ảnh từ máy để lưu vào SQL hoặc dán link)</label>
+              <input type="text" id="updateAfterImageUrl" placeholder="http://localhost:5000/images/uploads/... hoặc dán link ảnh"
+                class="w-full p-2 rounded-lg border border-slate-300 text-xs">
             </div>
 
             <div class="text-right pt-1">
-              <button type="submit" class="bg-eco-700 hover:bg-eco-800 text-white font-semibold text-xs px-4 py-2 rounded-lg shadow-sm transition-all">
+              <button type="submit" class="btn-3d bg-eco-700 hover:bg-eco-800 text-white font-semibold text-xs px-4 py-2 rounded-lg">
                 Lưu cập nhật tiến độ
               </button>
             </div>
           </form>
         </div>
-
       </div>
 
-      <!-- Modal Footer -->
       <div class="p-3 bg-slate-50 border-t border-slate-200 text-right">
         <button onclick="window.app.closeReportDetail()" class="px-4 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-600 hover:bg-slate-100">
           Đóng
         </button>
       </div>
-
     </div>
   </div>
 
-  <!-- ========================================================================= -->
-  <!-- MODAL 2: GỬI PHẢN ÁNH MỚI (CITIZEN FORM)                                  -->
-  <!-- ========================================================================= -->
+  <!-- MODAL 2: GỬI PHẢN ÁNH MỚI -->
   <div id="createReportModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
-      
-      <!-- Header -->
+    <div class="modal-pop bg-white rounded-2xl max-w-2xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
       <div class="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between bg-eco-50">
         <div>
           <h3 class="text-base font-bold text-eco-900">Gửi Phản Ánh Ô Nhiễm Môi Trường</h3>
-          <p class="text-xs text-eco-700">Thông tin phản ánh sẽ được chuyển trực tiếp tới cán bộ thụ lý địa bàn</p>
+          <p class="text-xs text-eco-700">Thông tin phản ánh được gửi trực tiếp lên hệ thống giám sát MT Xanh</p>
         </div>
-        <button onclick="window.app.closeCreateModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200/60 transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        <button onclick="window.app.closeCreateModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200/60">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
         </button>
       </div>
 
-      <!-- Form Body -->
       <form id="createReportForm" onsubmit="window.app.handleCreateReportSubmit(event)" class="p-5 overflow-y-auto space-y-4 flex-1 text-xs">
-        
-        <!-- Pollution Type & Severity -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block font-semibold text-slate-700 mb-1">Loại ô nhiễm <span class="text-rose-500">*</span></label>
-            <select id="createPollutionType" required class="w-full py-2 px-3 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-eco-600 focus:outline-none">
-              <!-- Populated by app.js -->
-            </select>
+            <select id="createPollutionType" required class="w-full py-2 px-3 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-eco-600 focus:outline-none"></select>
           </div>
 
           <div>
             <label class="block font-semibold text-slate-700 mb-1">Mức độ nghiêm trọng</label>
             <select id="createSeverity" class="w-full py-2 px-3 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-eco-600 focus:outline-none">
-              <option value="MEDIUM">Trung bình (Ảnh hưởng cục bộ)</option>
-              <option value="LOW">Thấp (Nhẹ, mới phát sinh)</option>
-              <option value="HIGH">Nghiêm trọng (Ùn ứ nhiều ngày, bốc mùi)</option>
-              <option value="CRITICAL">Khẩn cấp (Nguy hại môi trường sống/sức khỏe)</option>
+              <option value="Trung bình">Trung bình</option>
+              <option value="Thấp">Thấp</option>
+              <option value="Nghiêm trọng">Nghiêm trọng</option>
+              <option value="Khẩn cấp">Khẩn cấp</option>
             </select>
           </div>
         </div>
 
-        <!-- Title -->
         <div>
-          <label class="block font-semibold text-slate-700 mb-1">Tiêu đề phản ánh ngắn gọn <span class="text-rose-500">*</span></label>
-          <input type="text" id="createTitle" required placeholder="Ví dụ: Bãi rác tự phát bốc mùi cạnh trường tiểu học..." 
+          <label class="block font-semibold text-slate-700 mb-1">Tiêu đề phản ánh <span class="text-rose-500">*</span></label>
+          <input type="text" id="createTitle" required placeholder="Ví dụ: Xả nước thải chưa qua xử lý xuống rạch..."
             class="w-full py-2 px-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-eco-600 focus:outline-none">
         </div>
 
-        <!-- Address & Map Coordinate Picker -->
         <div>
           <label class="block font-semibold text-slate-700 mb-1">Địa chỉ xảy ra sự việc <span class="text-rose-500">*</span></label>
-          <input type="text" id="createAddress" required placeholder="Số nhà, tên đường, Phường/Xã tại TP. Cao Lãnh..." 
+          <input type="text" id="createAddress" required placeholder="Số nhà, tên đường, Phường/Xã tại TP. Cao Lãnh..."
             class="w-full py-2 px-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-eco-600 focus:outline-none">
         </div>
 
-        <!-- Mini Picker Map -->
         <div>
           <div class="flex items-center justify-between mb-1">
             <span class="font-semibold text-slate-700">Ghim vị trí trên bản đồ Cao Lãnh (Click để dời ghim):</span>
@@ -706,8 +1134,7 @@
             </span>
           </div>
           <div id="pickerMap" class="w-full h-44 rounded-xl border border-slate-300 overflow-hidden"></div>
-          
-          <!-- Hidden or Readonly Coords -->
+
           <div class="grid grid-cols-2 gap-2 mt-2">
             <div>
               <span class="text-[10px] text-slate-400">Vĩ độ (Latitude):</span>
@@ -720,162 +1147,506 @@
           </div>
         </div>
 
-        <!-- Description -->
         <div>
           <label class="block font-semibold text-slate-700 mb-1">Mô tả hiện trường</label>
-          <textarea id="createDescription" rows="3" placeholder="Mô tả cụ thể thời gian, nguồn gốc ô nhiễm hoặc cơ sở nghi vấn vi phạm..." 
+          <textarea id="createDescription" rows="3" placeholder="Mô tả cụ thể thời gian, nguồn gốc ô nhiễm hoặc cơ sở nghi vấn..."
             class="w-full p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-eco-600 focus:outline-none"></textarea>
         </div>
 
-        <!-- Image URL with Preset Samples -->
         <div>
-          <label class="block font-semibold text-slate-700 mb-1">Hình ảnh hiện trường (Đường dẫn ảnh)</label>
-          <input type="url" id="createImageUrl" placeholder="https://images.unsplash.com/photo-..." 
+          <label class="block font-semibold text-slate-700 mb-1">Hình ảnh hiện trường (Tải ảnh từ máy để lưu vào SQL hoặc dán link)</label>
+          <input type="text" id="createImageUrl" placeholder="http://localhost:5000/images/uploads/... hoặc dán link ảnh"
             class="w-full py-2 px-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-eco-600 focus:outline-none">
-          
-          <div class="mt-2 p-2 bg-slate-50 rounded-lg border border-slate-200">
-            <span class="text-[10px] text-slate-500 font-medium block mb-1">Ảnh mẫu thử nghiệm nhanh:</span>
-            <div class="flex items-center gap-2 flex-wrap">
-              <button type="button" onclick="window.app.setPresetPhoto('https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=600')" class="px-2 py-0.5 rounded bg-white border border-slate-200 text-[10px] hover:border-eco-600">
-                🗑️ Bãi rác sinh hoạt
-              </button>
-              <button type="button" onclick="window.app.setPresetPhoto('https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?w=600')" class="px-2 py-0.5 rounded bg-white border border-slate-200 text-[10px] hover:border-eco-600">
-                🌊 Nước thải đen
-              </button>
-              <button type="button" onclick="window.app.setPresetPhoto('https://images.unsplash.com/photo-1516937941344-00b4e0337589?w=600')" class="px-2 py-0.5 rounded bg-white border border-slate-200 text-[10px] hover:border-eco-600">
-                💨 Khói bụi ô nhiễm
-              </button>
-              <button type="button" onclick="window.app.setPresetPhoto('https://images.unsplash.com/photo-1605600659908-0ef719419d41?w=600')" class="px-2 py-0.5 rounded bg-white border border-slate-200 text-[10px] hover:border-eco-600">
-                📦 Ùn ứ chợ dân sinh
-              </button>
-            </div>
-          </div>
         </div>
 
-        <!-- Submit Button -->
         <div class="pt-2 flex items-center justify-end gap-2">
           <button type="button" onclick="window.app.closeCreateModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-100 font-semibold">
             Hủy bỏ
           </button>
-          <button type="submit" class="bg-eco-700 hover:bg-eco-800 text-white font-semibold px-5 py-2 rounded-xl shadow-sm hover:shadow transition-all flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-            <span>Gửi phản ánh ngay</span>
+          <button type="submit" class="btn-3d bg-eco-700 hover:bg-eco-800 text-white font-semibold px-5 py-2 rounded-xl">
+            Gửi phản ánh ngay
           </button>
         </div>
-
       </form>
-
     </div>
   </div>
 
-  <!-- ========================================================================= -->
-  <!-- MODAL 3: ĐĂNG NHẬP / ĐĂNG KÝ (AUTH MODAL)                                 -->
-  <!-- ========================================================================= -->
-  <div id="authModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
-      
-      <!-- Tabs -->
-      <div class="flex border-b border-slate-200 text-xs">
-        <button id="tabAuthLogin" onclick="window.app.switchAuthMode('login')" class="flex-1 py-3 text-center border-b-2 border-eco-600 text-eco-700 font-bold transition-all">
-          Đăng nhập
-        </button>
-        <button id="tabAuthRegister" onclick="window.app.switchAuthMode('register')" class="flex-1 py-3 text-center border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-medium transition-all">
-          Đăng ký tài khoản
-        </button>
-      </div>
-
-      <!-- Login Form -->
-      <div id="loginFormContainer" class="p-6">
-        <form id="loginForm" onsubmit="window.app.handleLoginSubmit(event)" class="space-y-4 text-xs">
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Email đăng nhập</label>
-            <input type="email" id="loginEmail" required placeholder="an.nguyen@gmail.com" 
-              class="w-full py-2 px-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-eco-600 focus:outline-none">
-          </div>
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Mật khẩu</label>
-            <input type="password" id="loginPassword" required placeholder="••••••••" 
-              class="w-full py-2 px-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-eco-600 focus:outline-none">
-          </div>
-          <button type="submit" class="w-full py-2.5 rounded-xl bg-eco-700 hover:bg-eco-800 text-white font-bold transition-colors shadow-sm">
-            Đăng nhập hệ thống
+  <!-- MODAL 3: ADMIN ĐĂNG BÀI BÁO & THÊM VIDEO YOUTUBE MỚI -->
+  <div id="adminMediaModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-pop bg-white rounded-2xl max-w-xl w-full shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <div class="flex items-center gap-2">
+          <button id="tabAdminAddArticle" onclick="switchAdminMediaFormTab('article')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-eco-700 text-white">
+            📰 Đăng bài báo mới
           </button>
-        </form>
-
-        <div class="mt-4 pt-4 border-t border-slate-100 text-[11px] text-slate-500">
-          <p class="font-semibold mb-1">Tài khoản mẫu trong database:</p>
-          <ul class="space-y-0.5 text-slate-600">
-            <li>• Người dân: <code class="text-eco-800">an.nguyen@gmail.com</code></li>
-            <li>• Cán bộ: <code class="text-eco-800">tuan.canbo@dongthap.gov.vn</code></li>
-            <li>• Quản lý: <code class="text-eco-800">hung.quanly@dongthap.gov.vn</code></li>
-          </ul>
+          <button id="tabAdminAddVideo" onclick="switchAdminMediaFormTab('video')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600">
+            ▶ Thêm video YouTube
+          </button>
         </div>
-      </div>
-
-      <!-- Register Form -->
-      <div id="registerFormContainer" class="p-6 hidden">
-        <form id="registerForm" onsubmit="window.app.handleRegisterSubmit(event)" class="space-y-3 text-xs">
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Họ và tên</label>
-            <input type="text" id="regFullName" required placeholder="Nguyễn Văn An" 
-              class="w-full py-2 px-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-eco-600 focus:outline-none">
-          </div>
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Email</label>
-            <input type="email" id="regEmail" required placeholder="an.nguyen@gmail.com" 
-              class="w-full py-2 px-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-eco-600 focus:outline-none">
-          </div>
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Số điện thoại</label>
-            <input type="tel" id="regPhone" placeholder="0901234567" 
-              class="w-full py-2 px-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-eco-600 focus:outline-none">
-          </div>
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Mật khẩu</label>
-            <input type="password" id="regPassword" required placeholder="Tối thiểu 6 ký tự" 
-              class="w-full py-2 px-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-eco-600 focus:outline-none">
-          </div>
-          <button type="submit" class="w-full py-2.5 rounded-xl bg-eco-700 hover:bg-eco-800 text-white font-bold transition-colors shadow-sm">
-            Tạo tài khoản công dân
-          </button>
-        </form>
-      </div>
-
-      <!-- Close -->
-      <div class="p-3 bg-slate-50 border-t border-slate-200 text-right">
-        <button onclick="window.app.closeAuthModal()" class="px-3 py-1 text-xs text-slate-500 hover:text-slate-800 font-medium">
-          Đóng
+        <button onclick="closeAdminMediaModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200/60">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
         </button>
       </div>
 
+      <div id="adminArticleFormBox" class="p-5">
+        <form id="adminAddArticleForm" onsubmit="handleAdminAddArticleSubmit(event)" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Tiêu đề bài báo <span class="text-rose-500">*</span></label>
+            <input type="text" id="adminNewsTitle" required placeholder="Ví dụ: Cao Lãnh ra quân làm sạch tuyến rạch..." class="w-full py-2 px-3 rounded-xl border border-slate-300">
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Nguồn / Chuyên mục</label>
+              <input type="text" id="adminNewsSource" placeholder="Bản tin MT Xanh / Báo Đồng Tháp" class="w-full py-2 px-3 rounded-xl border border-slate-300">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Ảnh minh họa (Tải từ máy hoặc link)</label>
+              <input type="text" id="adminNewsImage" placeholder="http://localhost:5000/images/uploads/..." class="w-full py-2 px-3 rounded-xl border border-slate-300">
+            </div>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Link bài báo gốc (tùy chọn)</label>
+            <input type="url" id="adminNewsLink" placeholder="https://..." class="w-full py-2 px-3 rounded-xl border border-slate-300">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Tóm tắt nội dung</label>
+            <textarea id="adminNewsSummary" rows="3" placeholder="Nội dung tóm tắt để hiển thị trên trang chủ cho người dân..." class="w-full p-2.5 rounded-xl border border-slate-300"></textarea>
+          </div>
+          <div class="pt-2 flex justify-end gap-2">
+            <button type="button" onclick="closeAdminMediaModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-600 font-semibold">Hủy</button>
+            <button type="submit" class="px-4 py-2 rounded-xl bg-eco-700 hover:bg-eco-800 text-white font-bold">Đăng bài báo</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="adminVideoFormBox" class="p-5 hidden">
+        <form id="adminAddVideoForm" onsubmit="handleAdminAddVideoSubmit(event)" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Link YouTube hoặc Video ID <span class="text-rose-500">*</span></label>
+            <input type="text" id="adminVideoUrl" required placeholder="https://www.youtube.com/watch?v=... hoặc mã 11 ký tự" class="w-full py-2 px-3 rounded-xl border border-slate-300">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Tiêu đề video <span class="text-rose-500">*</span></label>
+            <input type="text" id="adminVideoTitle" required placeholder="Tên phóng sự / video tuyên truyền môi trường..." class="w-full py-2 px-3 rounded-xl border border-slate-300">
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Kênh phát sóng</label>
+              <input type="text" id="adminVideoChannel" placeholder="Truyền Hình Đồng Tháp" class="w-full py-2 px-3 rounded-xl border border-slate-300">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Thời lượng / Nhãn</label>
+              <input type="text" id="adminVideoDuration" placeholder="03:45 hoặc Mới" class="w-full py-2 px-3 rounded-xl border border-slate-300">
+            </div>
+          </div>
+          <div class="pt-2 flex justify-end gap-2">
+            <button type="button" onclick="closeAdminMediaModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-600 font-semibold">Hủy</button>
+            <button type="submit" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold">Thêm video</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 
-  <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toastContainer"></div>
 
-  <!-- FOOTER -->
   <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-xs text-slate-500 no-print">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-2">
-        <div class="w-6 h-6 rounded-lg bg-eco-700 text-white flex items-center justify-center font-bold text-xs">E</div>
-        <span class="font-semibold text-slate-700">EcoAlert Cao Lãnh</span>
-        <span>— Đề tài Niên Luận Bảo Vệ Môi Trường</span>
+      <div class="flex items-center gap-2.5">
+        <div class="w-7 h-7 rounded-full bg-eco-700 text-white flex items-center justify-center font-extrabold text-[10px]">MT</div>
+        <span class="font-bold text-slate-700">MT Xanh & Cuộc Sống</span>
+        <span>— Cổng Thông Tin & Giám Sát Ô Nhiễm Môi Trường Đô Thị</span>
       </div>
-      <div class="flex items-center gap-4 text-slate-400">
-        <span>Giao diện chuẩn hóa Xanh Lá & Trắng</span>
-        <span>•</span>
-        <span>Hỗ trợ REST API & SQL Server</span>
+      <div class="text-slate-400">
+        TP. Cao Lãnh, Đồng Tháp
       </div>
     </div>
   </footer>
 
-  <!-- Scripts -->
+  <canvas id="aiSceneCanvas" class="hidden"></canvas>
+
+  <script>
+    function toggleMagDropdown(e, btn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const wrap = btn.closest('.mag-dd-wrap');
+      const isOpen = wrap.classList.contains('dd-open');
+      document.querySelectorAll('.mag-dd-wrap.dd-open').forEach(el => el.classList.remove('dd-open'));
+      if (!isOpen) wrap.classList.add('dd-open');
+    }
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.mag-dd-wrap')) {
+        document.querySelectorAll('.mag-dd-wrap.dd-open').forEach(el => el.classList.remove('dd-open'));
+      }
+    });
+
+    // AI Phân tích ảnh hiện trường: đánh giá sát thực tế & chú thích tự nhiên
+    let aiCurrentImageDataUrl = '';
+    let aiLatestPayload = null;
+
+    function onAiImageSelected(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        aiCurrentImageDataUrl = e.target.result;
+        const imgEl = document.getElementById('aiPreviewImage');
+        const placeholderEl = document.getElementById('aiPreviewPlaceholder');
+        imgEl.src = aiCurrentImageDataUrl;
+        imgEl.classList.remove('hidden');
+        placeholderEl.classList.add('hidden');
+        runAiSceneAnalysis();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function reAnalyzeAiIfReady() {
+      if (aiCurrentImageDataUrl) {
+        runAiSceneAnalysis();
+      }
+    }
+
+    function inspectSceneVisuals(imgElement) {
+      const canvas = document.getElementById('aiSceneCanvas');
+      const ctx = canvas.getContext('2d');
+      const w = 128;
+      const h = 128;
+      canvas.width = w;
+      canvas.height = h;
+      ctx.drawImage(imgElement, 0, 0, w, h);
+
+      const data = ctx.getImageData(0, 0, w, h).data;
+      let sumLuma = 0;
+      let highContrastOrClutter = 0;
+      let blueWater = 0;
+      let lushGreen = 0;
+      const total = w * h;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+
+        const luma = 0.299 * r + 0.587 * g + 0.114 * b;
+        const maxC = Math.max(r, g, b);
+        const minC = Math.min(r, g, b);
+        const sat = maxC === 0 ? 0 : (maxC - minC) / maxC;
+
+        sumLuma += luma;
+        if (sat > 0.35 || (maxC - minC) > 65 || luma < 85) {
+          highContrastOrClutter++;
+        }
+        if (b > r + 14 && b > g + 8 && luma > 75) {
+          blueWater++;
+        }
+        if (g > r + 18 && g > b + 12 && sat > 0.25) {
+          lushGreen++;
+        }
+      }
+
+      return {
+        avgLuma: sumLuma / total,
+        clutterRatio: highContrastOrClutter / total,
+        blueRatio: blueWater / total,
+        greenRatio: lushGreen / total
+      };
+    }
+
+    function runAiSceneAnalysis() {
+      const imgEl = document.getElementById('aiPreviewImage');
+      if (!aiCurrentImageDataUrl || !imgEl.src) {
+        showAiToast('Hãy chụp hoặc chọn một bức ảnh trước khi phân tích.', true);
+        return;
+      }
+
+      const selectedCat = document.getElementById('aiContextCategory').value;
+      const location = (document.getElementById('aiContextLocation').value || 'TP. Cao Lãnh, Đồng Tháp').trim();
+      const vis = inspectSceneVisuals(imgEl);
+
+      let resolvedKey = selectedCat;
+      if (selectedCat === 'auto') {
+        if (vis.greenRatio > 0.34 && vis.clutterRatio < 0.42) {
+          resolvedKey = 'song-xanh';
+        } else if (vis.blueRatio > 0.30 && vis.clutterRatio < 0.48) {
+          resolvedKey = 'o-nhiem-nuoc';
+        } else if (vis.avgLuma < 82) {
+          resolvedKey = 'o-nhiem-khong-khi';
+        } else {
+          resolvedKey = 'o-nhiem-rac';
+        }
+      }
+
+      // Chấm điểm mức độ ô nhiễm sát thực tế hơn
+      let score = Math.round(52 + vis.clutterRatio * 38);
+      if (resolvedKey === 'song-xanh') {
+        score = Math.max(18, Math.min(36, Math.round(vis.clutterRatio * 45)));
+      } else {
+        score = Math.max(68, Math.min(92, score));
+      }
+
+      let severityLabel = 'Nghiêm trọng';
+      let badgeClasses = 'px-3 py-1 rounded-full bg-rose-100 text-rose-800 text-[11px] font-extrabold';
+      let barColorClass = 'h-full rounded-full bg-rose-600 transition-all duration-300';
+
+      if (score >= 82) {
+        severityLabel = 'Rất nghiêm trọng';
+      } else if (score < 40) {
+        severityLabel = 'Thấp';
+        badgeClasses = 'px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-extrabold';
+        barColorClass = 'h-full rounded-full bg-emerald-600 transition-all duration-300';
+      }
+
+      const scenarios = {
+        'o-nhiem-rac': {
+          badge: 'Ô nhiễm rác thải',
+          reportType: 'Rác thải tự phát',
+          headline: `Ô nhiễm rác thải ùn ứ tại ${location} — Mức độ ${severityLabel.toLowerCase()}`,
+          sapo: `Hiện trường ghi nhận tại ${location} có tình trạng rác thải tập kết, xả bỏ lộn xộn gây mất vệ sinh và ảnh hưởng trực tiếp đến mỹ quan đô thị cũng như môi trường xung quanh.`,
+          caption: `Ảnh hiện trường tình trạng rác thải và chất thải phát sinh tại ${location}.`,
+          observation: `Hình ảnh cho thấy nhiều loại rác thải, bao bì và vật dụng hỗn tạp xuất hiện dày đặc trên bề mặt khu vực. Tình trạng này nếu không được thu gom và xử lý kịp thời dễ phát sinh mùi hôi, ruồi muỗi và tràn rác ra khu vực lân cận.`,
+          recommendation: `Cần sớm tổ chức dọn dẹp, thu gom toàn bộ lượng rác tồn đọng tại ${location}, đồng thời rà soát điểm tập kết và nhắc nhở, xử phạt hành vi xả rác sai quy định.`
+        },
+        'o-nhiem-nuoc': {
+          badge: 'Ô nhiễm nguồn nước',
+          reportType: 'Nước thải / Kênh rạch ô nhiễm',
+          headline: `Cảnh báo ô nhiễm mặt nước & kênh rạch tại ${location} — Mức độ ${severityLabel.toLowerCase()}`,
+          sapo: `Ghi nhận khu vực mặt nước tại ${location} có dấu hiệu ô nhiễm (${severityLabel.toLowerCase()}), tác động đến sinh hoạt, canh tác và môi trường nước của người dân quanh tuyến rạch.`,
+          caption: `Ảnh ghi nhận hiện trạng mặt nước và khu vực kênh rạch tại ${location}.`,
+          observation: `Khu vực mặt nước thể hiện sự biến đổi trạng thái và xuất hiện các yếu tố gây kém sạch quanh bờ/mặt rạch. Đây là dấu hiệu cần được kiểm tra để hạn chế lan rộng ô nhiễm nguồn nước.`,
+          recommendation: `Người dân tạm thời hạn chế sử dụng nước mặt chưa qua xử lý; cơ quan chức năng cần kiểm tra nguồn xả thải dọc tuyến kênh rạch và có biện pháp làm sạch phù hợp.`
+        },
+        'o-nhiem-khong-khi': {
+          badge: 'Ô nhiễm khói bụi & không khí',
+          reportType: 'Khói bụi / Mùi hôi',
+          headline: `Ghi nhận tình trạng khói bụi / ô nhiễm không khí tại ${location} — Mức độ ${severityLabel.toLowerCase()}`,
+          sapo: `Hiện trường tại ${location} xuất hiện dấu hiệu khói, bụi hoặc môi trường kém thông thoáng ở mức ${severityLabel.toLowerCase()}, ảnh hưởng đến không khí và sức khỏe người dân khu vực.`,
+          caption: `Ảnh hiện trường ghi nhận khói bụi hoặc suy giảm chất lượng không khí tại ${location}.`,
+          observation: `Không gian trong ảnh bị che phủ/giảm độ quang đãng đáng kể, cho thấy có nguồn phát tán khói, bụi hoặc đốt rác/phế phẩm gây ô nhiễm cục bộ trong khu dân cư.`,
+          recommendation: `Người dân nên hạn chế tiếp xúc trực tiếp và đeo khẩu trang khi đi qua khu vực; cần kiểm tra, ngăn chặn hành vi đốt rác tự phát hoặc phát tán bụi vượt mức quy định.`
+        },
+        'song-xanh': {
+          badge: 'Cảnh quan & Sống xanh',
+          reportType: 'Rác thải tự phát',
+          headline: `Hiện trạng cảnh quan xanh tại ${location} — Mức độ ô nhiễm thấp`,
+          sapo: `Khu vực ghi nhận tại ${location} giữ được mảng xanh và không gian tương đối sạch sẽ, gọn gàng, phù hợp duy trì mô hình đô thị xanh và thân thiện môi trường.`,
+          caption: `Ảnh ghi nhận mảng xanh và không gian sạch đẹp tại ${location}.`,
+          observation: `Khung hình chủ yếu là cây xanh và bề mặt thoáng sạch, chưa ghi nhận điểm ùn ứ rác thải lớn hay dấu hiệu ô nhiễm nặng trên diện rộng.`,
+          recommendation: `Duy trì chăm sóc cây xanh, giữ thói quen phân loại rác tại nguồn và vận động người dân cùng bảo vệ cảnh quan sạch đẹp tại ${location}.`
+        }
+      };
+
+      const info = scenarios[resolvedKey] || scenarios['o-nhiem-rac'];
+      const nowStr = new Date().toLocaleString('vi-VN');
+
+      document.getElementById('aiEmptyArticleState').classList.add('hidden');
+      document.getElementById('aiArticleResultCard').classList.remove('hidden');
+      document.getElementById('aiArticleTimestamp').textContent = `Cập nhật: ${nowStr}`;
+
+      document.getElementById('aiArtCategoryBadge').textContent = info.badge;
+      document.getElementById('aiArtSeverityBadge').className = badgeClasses;
+      document.getElementById('aiArtSeverityBadge').textContent = `Mức độ: ${severityLabel}`;
+      document.getElementById('aiArtHeadline').textContent = info.headline;
+      document.getElementById('aiArtSapo').textContent = info.sapo;
+      document.getElementById('aiArtCaption').textContent = `Chú thích ảnh: ${info.caption}`;
+      document.getElementById('aiArtScoreText').textContent = `${score}/100`;
+      document.getElementById('aiArtScoreBar').className = barColorClass;
+      document.getElementById('aiArtScoreBar').style.width = `${score}%`;
+      document.getElementById('aiArtObservation').textContent = info.observation;
+      document.getElementById('aiArtRecommendation').textContent = info.recommendation;
+
+      aiLatestPayload = {
+        createdAt: nowStr,
+        location,
+        category: info.badge,
+        reportType: info.reportType,
+        severity: severityLabel.includes('Nghiêm trọng') ? 'Nghiêm trọng' : (score < 40 ? 'Thấp' : 'Trung bình'),
+        score,
+        headline: info.headline,
+        sapo: info.sapo,
+        caption: info.caption,
+        observation: info.observation,
+        recommendation: info.recommendation
+      };
+    }
+
+    function copyAiArticleText() {
+      if (!aiLatestPayload) return;
+      const text = [
+        `[${aiLatestPayload.category}] - Mức độ: ${aiLatestPayload.severity} (${aiLatestPayload.score}/100)`,
+        aiLatestPayload.headline,
+        '',
+        aiLatestPayload.sapo,
+        `Chú thích ảnh: ${aiLatestPayload.caption}`,
+        '',
+        'Nhận định tình trạng hiện trường:',
+        aiLatestPayload.observation,
+        '',
+        'Khuyến nghị & Hướng xử lý:',
+        aiLatestPayload.recommendation,
+        '',
+        `Địa điểm: ${aiLatestPayload.location} | Thời gian: ${aiLatestPayload.createdAt}`
+      ].join('\n');
+
+      navigator.clipboard?.writeText(text).then(() => {
+        showAiToast('Đã sao chép toàn bộ nội dung bản tin.');
+      }).catch(() => {
+        showAiToast('Không thể tự động sao chép trên trình duyệt này.', true);
+      });
+    }
+
+    function applyAiArticleToReportForm() {
+      if (!aiLatestPayload) return;
+      if (window.app && typeof window.app.openCreateModal === 'function') {
+        window.app.openCreateModal();
+      }
+      setTimeout(() => {
+        const titleEl = document.getElementById('createTitle');
+        const addrEl = document.getElementById('createAddress');
+        const sevEl = document.getElementById('createSeverity');
+        const typeEl = document.getElementById('createPollutionType');
+        const descEl = document.getElementById('createDescription');
+
+        if (titleEl) titleEl.value = aiLatestPayload.headline;
+        if (addrEl && !addrEl.value.trim()) addrEl.value = aiLatestPayload.location;
+        if (sevEl) {
+          const opt = Array.from(sevEl.options).find(o => o.value === aiLatestPayload.severity);
+          if (opt) sevEl.value = aiLatestPayload.severity;
+        }
+        if (typeEl && aiLatestPayload.reportType) {
+          const matchedType = Array.from(typeEl.options).find(o =>
+            o.value.toLowerCase().includes(aiLatestPayload.reportType.toLowerCase().split(' ')[0])
+          );
+          if (matchedType) typeEl.value = matchedType.value;
+        }
+        if (descEl) {
+          descEl.value = `${aiLatestPayload.sapo}\n\nNhận định: ${aiLatestPayload.observation}\nKhuyến nghị: ${aiLatestPayload.recommendation}`;
+        }
+      }, 150);
+    }
+
+    function showAiToast(msg, isError = false) {
+      const el = document.getElementById('aiActionToast');
+      if (!el) return;
+      el.textContent = msg;
+      el.className = isError
+        ? 'text-xs font-semibold text-rose-700 bg-rose-50 border border-rose-200 rounded-xl px-3.5 py-2'
+        : 'text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-3.5 py-2';
+      el.classList.remove('hidden');
+    }
+
+    // Tích hợp tải ảnh từ máy tính -> POST http://localhost:5000/api/v1/upload
+    (function initDirectImageUploaders() {
+      const UPLOAD_API_URL = 'http://localhost:5000/api/v1/upload';
+
+      async function uploadImageFile(file, targetInput, statusEl, previewImg) {
+        if (!file || !targetInput) return;
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        if (statusEl) {
+          statusEl.textContent = '⏳ Đang tải ảnh lên máy chủ...';
+          statusEl.className = 'text-[11px] text-amber-600 font-semibold';
+        }
+
+        try {
+          const res = await fetch(UPLOAD_API_URL, {
+            method: 'POST',
+            body: formData
+          });
+
+          const rawText = await res.text();
+          let data = null;
+          try {
+            data = JSON.parse(rawText);
+          } catch (_) {
+            throw new Error('Server cổng 5000 chưa bật API /api/v1/upload');
+          }
+
+          if (!res.ok || !data.imageUrl) {
+            throw new Error(data.message || 'Không thể tải ảnh lên');
+          }
+
+          targetInput.value = data.imageUrl;
+          targetInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+          if (previewImg) {
+            previewImg.src = data.imageUrl;
+            previewImg.classList.remove('hidden');
+          }
+          if (statusEl) {
+            statusEl.innerHTML = `✅ Đã tải lên thành công! <a href="${data.imageUrl}" target="_blank" class="underline text-eco-700">Xem ảnh</a>`;
+            statusEl.className = 'text-[11px] text-emerald-700 font-semibold';
+          }
+        } catch (err) {
+          if (statusEl) {
+            statusEl.textContent = `❌ Lỗi: ${err.message}`;
+            statusEl.className = 'text-[11px] text-rose-600 font-semibold';
+          }
+        }
+      }
+
+      function attachUploader(inputId, btnLabel) {
+        const urlInput = document.getElementById(inputId);
+        if (!urlInput || urlInput.dataset.uploaderReady === '1') return;
+        urlInput.dataset.uploaderReady = '1';
+
+        const box = document.createElement('div');
+        box.className = 'mt-1.5 space-y-1.5';
+
+        const row = document.createElement('div');
+        row.className = 'flex flex-wrap items-center gap-2';
+
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.className = 'hidden';
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'px-3 py-1.5 rounded-lg bg-eco-50 hover:bg-eco-100 text-eco-800 border border-eco-300 text-[11px] font-bold transition-colors';
+        btn.textContent = btnLabel;
+
+        const status = document.createElement('span');
+        status.className = 'text-[11px] text-slate-400';
+        status.textContent = 'Hoặc dán trực tiếp link ảnh ở ô trên';
+
+        const preview = document.createElement('img');
+        preview.className = 'hidden h-24 w-auto rounded-lg border border-slate-200 object-cover shadow-sm';
+        preview.alt = 'Ảnh xem trước';
+
+        btn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => {
+          const file = e.target.files && e.target.files[0];
+          if (file) uploadImageFile(file, urlInput, status, preview);
+        });
+
+        row.appendChild(btn);
+        row.appendChild(fileInput);
+        row.appendChild(status);
+        box.appendChild(row);
+        box.appendChild(preview);
+        urlInput.insertAdjacentElement('afterend', box);
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        attachUploader('createImageUrl', '📷 Chọn ảnh hiện trường từ máy');
+        attachUploader('updateAfterImageUrl', '📷 Chọn ảnh sau xử lý từ máy');
+        attachUploader('adminNewsImage', '📷 Chọn ảnh bài báo từ máy');
+      });
+    })();
+  </script>
+
   <script src="js/data.js"></script>
   <script src="js/api.js"></script>
   <script src="js/map.js"></script>
   <script src="js/chart.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/media-manager.js"></script>
+  <script src="js/role-portal.js"></script>
+  <script src="js/magazine-dropdowns.js"></script>
 </body>
 </html>
-

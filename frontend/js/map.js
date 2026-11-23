@@ -1,7 +1,7 @@
 /**
- * Map Controller (Leaflet & OpenStreetMap)
+ * Bộ điều khiển Bản đồ số (map.js - Leaflet & OpenStreetMap)
  * Trực quan hóa tọa độ các điểm nóng ô nhiễm tại TP. Cao Lãnh
- * Tương tác click xem popup và chọn tọa độ ghim điểm mới
+ * Tương tác click xem thông tin và chọn tọa độ ghim điểm phản ánh mới
  */
 
 class MapController {
@@ -35,22 +35,44 @@ class MapController {
 
   getSeverityColor(severity) {
     switch (severity) {
-      case 'CRITICAL': return { bg: '#dc2626', border: '#991b1b', text: 'Khẩn cấp' };
-      case 'HIGH': return { bg: '#ea580c', border: '#c2410c', text: 'Nghiêm trọng' };
-      case 'MEDIUM': return { bg: '#d97706', border: '#b45309', text: 'Trung bình' };
-      case 'LOW': default: return { bg: '#16a34a', border: '#15803d', text: 'Thấp' };
+      case 'Khẩn cấp':
+      case 'CRITICAL':
+        return { bg: '#dc2626', border: '#991b1b', text: 'Khẩn cấp' };
+      case 'Nghiêm trọng':
+      case 'HIGH':
+        return { bg: '#ea580c', border: '#c2410c', text: 'Nghiêm trọng' };
+      case 'Trung bình':
+      case 'MEDIUM':
+        return { bg: '#d97706', border: '#b45309', text: 'Trung bình' };
+      case 'Thấp':
+      case 'LOW':
+      default:
+        return { bg: '#16a34a', border: '#15803d', text: 'Thấp' };
     }
   }
 
   getStatusBadgeClass(status) {
     switch (status) {
-      case 'PENDING': return 'bg-amber-100 text-amber-800 border-amber-300';
-      case 'ACCEPTED': return 'bg-blue-100 text-blue-800 border-blue-300';
-      case 'VERIFIED': return 'bg-indigo-100 text-indigo-800 border-indigo-300';
-      case 'PROCESSING': return 'bg-purple-100 text-purple-800 border-purple-300';
-      case 'COMPLETED': return 'bg-emerald-100 text-emerald-800 border-emerald-300';
-      case 'REJECTED': return 'bg-rose-100 text-rose-800 border-rose-300';
-      default: return 'bg-gray-100 text-gray-800 border-gray-300';
+      case 'Chờ tiếp nhận':
+      case 'PENDING':
+        return 'bg-amber-100 text-amber-800 border-amber-300';
+      case 'Đã tiếp nhận':
+      case 'ACCEPTED':
+        return 'bg-blue-100 text-blue-800 border-blue-300';
+      case 'Đã xác minh':
+      case 'VERIFIED':
+        return 'bg-indigo-100 text-indigo-800 border-indigo-300';
+      case 'Đang xử lý':
+      case 'PROCESSING':
+        return 'bg-purple-100 text-purple-800 border-purple-300';
+      case 'Hoàn thành':
+      case 'COMPLETED':
+        return 'bg-emerald-100 text-emerald-800 border-emerald-300';
+      case 'Từ chối':
+      case 'REJECTED':
+        return 'bg-rose-100 text-rose-800 border-rose-300';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-300';
     }
   }
 
@@ -60,10 +82,10 @@ class MapController {
       ACCEPTED: 'Đã tiếp nhận',
       VERIFIED: 'Đã xác minh',
       PROCESSING: 'Đang xử lý',
-      COMPLETED: 'Đã hoàn thành',
+      COMPLETED: 'Hoàn thành',
       REJECTED: 'Từ chối'
     };
-    return map[status] || status;
+    return map[status] || status || 'Chờ tiếp nhận';
   }
 
   renderMarkers(reports = []) {
@@ -81,7 +103,6 @@ class MapController {
 
       const colors = this.getSeverityColor(r.severity_level);
 
-      // Custom marker icon
       const iconHtml = `
         <div class="custom-map-marker" style="--marker-color: ${colors.bg}; --marker-border: ${colors.border}">
           <div class="marker-pulse"></div>
@@ -123,7 +144,7 @@ class MapController {
             <h4 class="font-bold text-sm text-slate-800 line-clamp-2 leading-snug mb-1">
               ${r.title}
             </h4>
-            <p class="text-xs text-slate-550 flex items-start gap-1 mb-2">
+            <p class="text-xs text-slate-500 flex items-start gap-1 mb-2">
               <svg class="w-3.5 h-3.5 shrink-0 mt-0.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
               <span>${r.address_text || 'Chưa có địa chỉ cụ thể'}</span>
             </p>
@@ -152,7 +173,7 @@ class MapController {
     });
   }
 
-  // --- PICKER MAP (For Report Submission) ---
+  // --- BẢN ĐỒ CHỌN TỌA ĐỘ KHI GỬI PHẢN ÁNH ---
   initPickerMap(containerId = 'pickerMap', initialCoords = [10.4535, 105.6308], onPickCallback = null) {
     const el = document.getElementById(containerId);
     if (!el) return;
@@ -176,6 +197,8 @@ class MapController {
     this.pickerMarker = L.marker(initialCoords, { draggable: true }).addTo(this.pickerMap);
 
     const updateCoords = (lat, lng) => {
+      const display = document.getElementById('pickerCoordsDisplay');
+      if (display) display.textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
       if (onPickCallback) {
         onPickCallback(lat.toFixed(6), lng.toFixed(6));
       }
@@ -193,7 +216,6 @@ class MapController {
       updateCoords(e.latlng.lat, e.latlng.lng);
     });
 
-    // Invalidate size after modal render
     setTimeout(() => {
       if (this.pickerMap) this.pickerMap.invalidateSize();
     }, 300);
@@ -209,4 +231,3 @@ class MapController {
 }
 
 window.mapController = new MapController();
-
